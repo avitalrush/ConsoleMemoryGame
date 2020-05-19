@@ -4,8 +4,7 @@ using System.Text;
 
 namespace B20_Ex02
 {
-    class Class1
+    class BoardCell
     {
-        // hello
     }
 }
