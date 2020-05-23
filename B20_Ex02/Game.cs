@@ -96,5 +96,12 @@ namespace B20_Ex02
                 anotherRound = false;
             }
         }
+
+        void printGameResult()
+        {
+            string playerOneName, playerTwoName;
+            int playerOnePoints, playerTwoPoints;
+            playerOneName=Logic.PlayerManager.
+        }
     }
 }
