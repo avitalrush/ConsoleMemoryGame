@@ -2,10 +2,15 @@
 using System.Collections.Generic;
 using System.Text;
 
+
 namespace B20_Ex02
 {
-    class Program
+    public class Program
     {
-        // hello
+        void main()
+        {
+            Game game = new Game();
+            game.Start();
+        }
     }
 }
