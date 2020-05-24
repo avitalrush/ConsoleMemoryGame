@@ -38,12 +38,18 @@
     <Compile Include="Game.cs" />
     <Compile Include="Location.cs" />
     <Compile Include="Logic.cs" />
+    <Compile Include="LogicBoard.cs" />
     <Compile Include="Move.cs" />
     <Compile Include="Player.cs" />
+    <Compile Include="PlayersManager.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="UI.cs" />
+    <Compile Include="UIBoard.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Reference Include="Ex02.ConsoleUtils">
+      <HintPath>..\..\..\..\Google Drive\אביטל ושקד שליטי הפטרה\C#\1תרגילים סמסטר ב' 2020\תרגיל 2\Ex02.ConsoleUtils.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
