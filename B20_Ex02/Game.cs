@@ -169,5 +169,55 @@ namespace B20_Ex02
 
             return firstValue.Equals(secondValue);
         }
-    }
+
+        private void printGameResult()
+        {
+            Player winnerPlayer = newLogic.GetWinner(); //להשתמש בשדה לוג'יק שאביטל יצרה
+            if (!quitGame)
+            {
+                UI.printWinnerMessage(winnerPlayer);
+            }
+            else
+            {
+                UI.printGoodByeMessage();
+            }
+        }
+
+        private void initializePlayers()
+        {
+            string player1Name, player2Name, player2Type;
+            player1Name = UI.getPlayerName();
+            newLogic.addPlayer(player1Name, "Human", true);
+            player2Type = UI.getOpponentType();
+            newLogic.addPlayer(player2Name, player2Type, false);
+        }
+
+        private void initMove(Player i_CurrentPlayer)
+        {
+            currentMove=new Move(i_CurrentPlayer);
+        }
+
+        public void clearAndPrintBoard()
+        {
+            clearBoard();
+            printBoard();
+        }
+
+        public void clearBoard()
+        {
+            Ex02.ConsoleUtils.Screen.Clear();
+        }
+
+        public void printBoard()
+        {
+            BoardCell[,] logicBoard = m_Logic.m_Board.Cells();
+            UI.printBoard(logicBoard);
+        }
+
+        private void MakeValidMove(string i_PlayerMoveStr)
+        {
+            Location cellLocation = m_Logic.getCellLocation(i_PlayerMoveStr);
+            currentMove.SetLocation(cellLocation);
+            clearAndPrintBoard();
+        }
 }
