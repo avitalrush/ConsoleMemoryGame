@@ -32,7 +32,6 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="LogicBoard.cs" />
     <Compile Include="BoardCell.cs" />
     <Compile Include="Card.cs" />
     <Compile Include="Game.cs" />
