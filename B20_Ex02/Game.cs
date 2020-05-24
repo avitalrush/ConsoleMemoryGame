@@ -8,6 +8,9 @@ namespace B20_Ex02
     {
         private bool anotherRound = true;
         private bool quitGame = false;
+        private Move newMove;
+        private Logic m_Logic;
+        
 
         public void Start()
         {
@@ -78,17 +81,6 @@ namespace B20_Ex02
                
             }
 
-            printGameResult();
-            /*
-             ^^^^^^^^^^
-            if(!quitGame)
-            {
-                winner = Logic.getWinner();
-                UI.printWinnerMessege(winner);
-            }
-            else
-                "sorry you chose to quit! bye!"
-            */
             
             playAnotherRound = UI.askUserForAnotherRound();
             if(!playAnotherRound)
@@ -97,11 +89,54 @@ namespace B20_Ex02
             }
         }
 
-        void printGameResult()
+        private void printGameResult()
         {
-            string playerOneName, playerTwoName;
-            int playerOnePoints, playerTwoPoints;
-            playerOneName=Logic.PlayerManager.
+            Player winnerPlayer = newLogic.GetWinner(); //להשתמש בשדה לוג'יק שאביטל יצרה
+            if (!quitGame)
+            {
+                UI.printWinnerMessage(winnerPlayer);
+            }
+            else
+            {
+                UI.printGoodByeMessage();
+            }
         }
-    }
+
+        private void initializePlayers()
+        {
+            string player1Name, player2Name, player2Type;
+            player1Name = UI.getPlayerName();
+            newLogic.addPlayer(player1Name, "Human", true);
+            player2Type = UI.getOpponentType();
+            newLogic.addPlayer(player2Name, player2Type, false);
+        }
+
+        private void initMove(Player i_CurrentPlayer)
+        {
+            newMove=new Move(i_CurrentPlayer);
+        }
+
+        public void clearAndPrintBoard()
+        {
+            clearBoard();
+            printBoard();
+        }
+
+        public void clearBoard()
+        {
+            Ex02.ConsoleUtils.Screen.Clear();
+        }
+
+        public void printBoard()
+        {
+            BoardCell[,] logicBoard = m_Logic.m_Board.Cells();
+            UI.printBoard(logicBoard);
+        }
+
+        private void MakeValidMove(string i_PlayerMoveStr)
+        {
+            Location cellLocation = m_Logic.getCellLocation(i_PlayerMoveStr);
+            newMove.SetLocation(cellLocation);
+            clearAndPrintBoard();
+        }
 }

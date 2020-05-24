@@ -6,5 +6,6 @@ namespace B20_Ex02
 {
     class Card
     {
+
     }
 }

@@ -9,22 +9,30 @@ namespace B20_Ex02
         private string m_PlayerName;
         private int m_Points;
         private bool m_IsMyTurn;
-        private Enum m_PlayerType;
+        private ePlayerType m_PlayerType;
 
-        public Player(string i_Name,Enum i_Type,bool i_IsItMyTurn)
+        public Player(string i_Name,ePlayerType i_Type,bool i_IsItMyTurn)
         {
-            m_PlayerName = i_Name;
-            m_Points = 0;
-            m_PlayerType = i_Type;
-            m_IsMyTurn = i_IsItMyTurn;
+            this.m_PlayerName = i_Name;
+            this.m_Points = 0;
+            this.m_PlayerType = i_Type;
+            this.m_IsMyTurn = i_IsItMyTurn;
         }
-
+        public enum ePlayerType
+        {
+            Human,
+            Computer
+        };
         public int Points
         {
             get { return m_Points; }
             set { m_Points = value; }
         }
-
+        public ePlayerType PlayerType
+        {
+            get { return m_PlayerType; }
+            set { m_PlayerType = value; }
+        }
         public bool IsMyTurn
         {
             get { return m_IsMyTurn; }
