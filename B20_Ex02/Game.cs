@@ -6,95 +6,168 @@ namespace B20_Ex02
 {
     class Game
     {
-        private bool anotherRound = true;
-        private bool quitGame = false;
+        // MEMBERS:
+        //private const int k_NumOfPlayers = 2;
+        private bool m_AnotherRound = true;
+        private bool m_QuitGame = false;
+        private Logic m_Logic;
+        private UI m_Ui;
 
+        // CTOR:
+        public Game()
+        {
+            m_Logic = new Logic();
+            m_Ui = new UI();
+        }
+
+        // METHODS:
         public void Start()
         {
             InitializePlayers();
-
-            while(anotherRound)
+            while (m_AnotherRound && !m_QuitGame)
             {
                 Run();
             }
         }
 
-        void Run()
+        public void Run()
         {
             Player currentPlayer;
-            Move currentMove;
-            string currentCellStr;
-            List<string> validMoves;
-            Card currentCard;
-            bool validMovesLeft;
             Player winner;
+            Move currentMove;
+            Card currentCard;
+            //LogicBoard logicBoard;
+            //UIBoard uiBoard;
+            bool validMovesLeft = true;
+            List<string> validMoves;
+            string moveStr;
 
-            InitializeBoards();         // and print init logic board
+            /////////////////////////////////////////////////////////////
 
-            while(validMovesLeft && !quitGame)
+            InitializeBoards();
+            printBoard();   // Game's method, who is a mediator --> asks Logic for his LogicBoard and sends it to UI for printing
+
+            while (validMovesLeft && !m_QuitGame)
             {
-                currentPlayer = Logic.getCurrentPlayer();
+                currentPlayer = m_Logic.getCurrentPlayer();
                 currentMove = initMove(currentPlayer);
 
-                for(int i = 0; i < 2 && !quitGame; i++)
+                for (int i = 0; i < 2 && !m_QuitGame; i++)       // this is a move for one player, it has 2 parts (2 cards)
                 {
-                    validMoves = Logic.getValidMovesList();                                 // gets validMovesList, creates it from logicBoard + concatenates "Q" string
-                    currentCellStr = UI.getValidMoveFromUser(validMoves);                   // get move from user and checks validMoves for validity
+                    validMoves = m_Logic.getValidMovesList();                                 // gets validMovesList, creates it from logicBoard + concatenates "Q" string
 
-                    if (currentCellStr.Equals("Q"))                                         // if user input is Q --> quit
+                    //////// here we need cases in case currentPlayer.type == human --> continue like this, 
+
+                    moveStr = m_Ui.getValidMoveFromUser(validMoves);                   // get move from user and checks validMoves for validity
+
+                    if (moveStr.Equals("Q"))                                           // if user input is Q --> quit
                     {
-                        quitGame = true;
+                        m_QuitGame = true;
                     }
                     else                                                                    // else - user input is surly VALID and we can continue
                     {
-                        makeValidMove(currentCellStr);
-                        // ^^^^^^^^^
-                        //Location cellLocation = Logic.revealCardInCell(currentCellStr);     // reveal the card and get his location on board
-                        //currentMove.setCardLocation(cellLocation);                          // update card's location in move
-                        //clearAndPrintBoard();                                               // game's method, is the mediator between logic and UI boards
+                        makeValidMove(moveStr);         //change the name of the method because it's confusing, here it's only half of the move
                     }
                 }
 
-                if(!quitGame)
+                if(!m_QuitGame)
                 {
                     calculateMoveResult(currentMove);
-                    /*
-                     ^^^^^^^^^^
-                    if (!currentMove.matchingCards())                                           // launch Move's method matchingCards who checks in UIBoard according to locations
-                    {
-                        //sleep(2);
-                        Logic.undoMove(currentMove);
-                        Logic.switchPlayer(currentPlayer);
-                        clearAndPrintBoard();
-                    }
-                    else
-                    {
-                        Logic.givePoint(currentPlayer);
-                    }
-                    */
-
-                    validMovesLeft = Logic.checkIfValidMovesLeft();
+                    validMovesLeft = m_Logic.checkIfValidMovesLeft();
                 }
-               
             }
 
             printGameResult();
-            /*
-             ^^^^^^^^^^
-            if(!quitGame)
+
+            m_AnotherRound = m_Ui.askUserForAnotherRound();
+        }
+
+        void InitializeBoards()
+        {
+            int width, height;
+            bool validBoardSize = true;
+            const string k_invalidMsg = "Invalid Board Size (odd number of cells)";
+
+            do
             {
-                winner = Logic.getWinner();
-                UI.printWinnerMessege(winner);
+                width = m_Ui.getBoardWidth();
+                height = m_Ui.getBoardHeight();
+                validBoardSize = validateBoardSize(width, height);
+
+                if(!validBoardSize)
+                {
+                    Console.WriteLine(k_invalidMsg);
+                }
+            }
+            while(!validBoardSize);
+            
+            InitializeLogicBoard(width, height);
+            InitializeUIBoard(width, height);
+        }
+
+        bool validateBoardSize(int i_width, int i_height)
+        {
+            int numOfCells = i_width * i_height;
+            return numOfCells % 2 == 0;
+        }
+
+        void InitializeLogicBoard(int i_Width, int i_Height)
+        {
+            LogicBoard board = new LogicBoard(i_Width, i_Height);
+            m_Logic.SetBoard(board);
+            //m_Logic.SetBoard(i_Width, i_Height);
+        }
+
+        void InitializeUIBoard(int i_Width, int i_Height)
+        {
+            UIBoard board = new UIBoard(i_Width, i_Height);
+            //m_Ui.SetBoard(i_Width, i_Height);
+            shuffelValuesIntoBoard(ref board);
+            m_Ui.SetBoard(board);
+        }
+
+        void shuffelValuesIntoBoard(ref UIBoard io_Board)
+        {
+            int width = io_Board.Width;
+            int height = io_Board.Height;
+            int numOfUniqueValues = (width * height) / 2;
+            char[] boardValues = new char[numOfUniqueValues];
+
+
+            // if numOfUniqueValues = 4 , i need the letters A B C D
+            for (int i = 0; i < numOfUniqueValues; i++)
+            {
+                int temp = 65 + i;
+                boardValues[numOfUniqueValues] = '0' + temp;
+            }
+        }
+
+        void calculateMoveResult(Move i_Move)
+        {
+            bool matchingCards = checkIfMatchingCards(i_Move);
+
+            if (!matchingCards)
+            {
+                System.Threading.Thread.Sleep(2000);
+                m_Logic.undoMove(i_Move);
+                m_Logic.switchPlayers();
+                clearAndPrintBoard();
             }
             else
-                "sorry you chose to quit! bye!"
-            */
-            
-            playAnotherRound = UI.askUserForAnotherRound();
-            if(!playAnotherRound)
             {
-                anotherRound = false;
+                m_Logic.givePointToCurrentPlayer();
             }
+        }
+
+        bool checkIfMatchingCards(Move i_Move)
+        {
+            Location locationOfFirstCard = i_Move.getLocationOfFirstCard();
+            Location locationOfSecondCard = i_Move.getLocationOfSecondCard();
+
+            char firstValue = m_Ui.getCardValue(locationOfFirstCard);
+            char secondValue = m_Ui.getCardValue(locationOfSecondCard);
+
+            return firstValue.Equals(secondValue);
         }
     }
 }

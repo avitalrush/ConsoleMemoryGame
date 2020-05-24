@@ -6,5 +6,18 @@ namespace B20_Ex02
 {
     class Card
     {
+        private char value;
+
+        public char CardValue
+        {
+            get
+            {
+                return value;
+            }
+            set
+            {
+
+            }
+        }
     }
 }

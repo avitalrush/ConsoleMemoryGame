@@ -6,5 +6,15 @@ namespace B20_Ex02
 {
     class Move
     {
+        // MEMBERS:
+
+
+
+        // CTOR:
+
+
+
+        // METHODS:
+       
     }
 }

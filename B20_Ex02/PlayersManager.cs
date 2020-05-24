@@ -4,7 +4,7 @@ using System.Text;
 
 namespace B20_Ex02
 {
-    class Board
+    class PlayersManager
     {
     }
 }
