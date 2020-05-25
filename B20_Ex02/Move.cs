@@ -27,12 +27,12 @@ namespace B20_Ex02
             }
         }
 
-        public Location GetFirstCardLocation()
+        public Location GetLocationOfFirstCard()
         {
             return firstCardLocation;
         }
 
-        public Location GetSecondCardLocation()
+        public Location GetLocationOfSecondCard()
         {
             return secondCardLocation;
         }

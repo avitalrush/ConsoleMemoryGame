@@ -8,8 +8,8 @@ namespace B20_Ex02
     {
         public Player m_Player1;
         public Player m_Player2;
-        public Player m_CurrentPlayer;
-        public Player m_Winner;
+        private Player m_CurrentPlayer;
+        private Player m_Winner;
         private bool m_EndedInTie = false;
 
         public void CreatePlayer(string i_Name, Player.ePlayerType i_PlayerType, bool i_IsItMyTurn)
@@ -39,6 +39,13 @@ namespace B20_Ex02
                 m_Player1.IsMyTurn = true;
                 m_CurrentPlayer = m_Player1;
             }
+        }
+
+        public Player GetCurrentPlayer
+        {
+            get { return m_CurrentPlayer; }
+
+            set { m_CurrentPlayer = value; }
         }
 
         public void GameEndedInTie()

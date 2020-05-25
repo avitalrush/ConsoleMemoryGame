@@ -44,10 +44,9 @@ namespace B20_Ex02
             }
         }
 
-        public char getCardValue(Location i_LocationOnBoard)
+        public char GetCardValue(Location i_LocationOnBoard)
         {
             return m_Cards[i_LocationOnBoard.Column, i_LocationOnBoard.Row].CardValue;
-
         }
     }
 }

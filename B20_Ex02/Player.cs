@@ -25,10 +25,17 @@ namespace B20_Ex02
             Computer
         }
 
+        public string Name
+        {
+            get { return m_PlayerName; }
+
+            set { m_PlayerName = value; }
+        }
+
         public int Points
         {
             get { return m_Points; }
-
+            
             set { m_Points = value; }
         }
 

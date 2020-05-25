@@ -23,7 +23,7 @@ namespace B20_Ex02
         // METHODS:
         public void Start()
         {
-            InitializePlayers();
+            initializePlayers();
             while (m_AnotherRound && !m_QuitGame)
             {
                 Run();
@@ -44,21 +44,21 @@ namespace B20_Ex02
 
             /////////////////////////////////////////////////////////////
 
-            InitializeBoards();
+            initializeBoards();
             printBoard();   // Game's method, who is a mediator --> asks Logic for his LogicBoard and sends it to UI for printing
 
             while (validMovesLeft && !m_QuitGame)
             {
-                currentPlayer = m_Logic.getCurrentPlayer();
+                currentPlayer = m_Logic.GetCurrentPlayer();
                 currentMove = initMove(currentPlayer);
 
                 for (int i = 0; i < 2 && !m_QuitGame; i++)       // this is a move for one player, it has 2 parts (2 cards)
                 {
-                    validMoves = m_Logic.getValidMovesList();                                 // gets validMovesList, creates it from logicBoard + concatenates "Q" string
+                    validMoves = m_Logic.GetValidMovesList();                                 // gets validMovesList, creates it from logicBoard + concatenates "Q" string
 
                     //////// here we need cases in case currentPlayer.type == human --> continue like this, 
 
-                    moveStr = m_Ui.getValidMoveFromUser(validMoves);                   // get move from user and checks validMoves for validity
+                    moveStr = m_Ui.GetValidMoveFromUser(validMoves);                   // get move from user and checks validMoves for validity
 
                     if (moveStr.Equals("Q"))                                           // if user input is Q --> quit
                     {
@@ -66,14 +66,14 @@ namespace B20_Ex02
                     }
                     else                                                                    // else - user input is surly VALID and we can continue
                     {
-                        makeValidMove(moveStr);         //change the name of the method because it's confusing, here it's only half of the move
+                        makeValidMove(moveStr,ref currentMove);         //change the name of the method because it's confusing, here it's only half of the move
                     }
                 }
 
                 if(!m_QuitGame)
                 {
                     calculateMoveResult(currentMove);
-                    validMovesLeft = m_Logic.checkIfValidMovesLeft();
+                    validMovesLeft = m_Logic.CheckIfValidMovesLeft();
                 }
             }
 
@@ -82,7 +82,7 @@ namespace B20_Ex02
             m_AnotherRound = m_Ui.askUserForAnotherRound();
         }
 
-        void InitializeBoards()
+        private void initializeBoards()
         {
             int width, height;
             bool validBoardSize = true;
@@ -90,8 +90,8 @@ namespace B20_Ex02
 
             do
             {
-                width = m_Ui.getBoardWidth();
-                height = m_Ui.getBoardHeight();
+                width = m_Ui.GetBoardWidth();
+                height = m_Ui.GetBoardHeight();
                 validBoardSize = validateBoardSize(width, height);
 
                 if(!validBoardSize)
@@ -105,20 +105,20 @@ namespace B20_Ex02
             InitializeUIBoard(width, height);
         }
 
-        bool validateBoardSize(int i_width, int i_height)
+        private bool validateBoardSize(int i_width, int i_height)
         {
             int numOfCells = i_width * i_height;
             return numOfCells % 2 == 0;
         }
 
-        void InitializeLogicBoard(int i_Width, int i_Height)
+        private void InitializeLogicBoard(int i_Width, int i_Height)
         {
             LogicBoard board = new LogicBoard(i_Width, i_Height);
             m_Logic.SetBoard(board);
             //m_Logic.SetBoard(i_Width, i_Height);
         }
 
-        void InitializeUIBoard(int i_Width, int i_Height)
+        private void InitializeUIBoard(int i_Width, int i_Height)
         {
             UIBoard board = new UIBoard(i_Width, i_Height);
             //m_Ui.SetBoard(i_Width, i_Height);
@@ -126,7 +126,7 @@ namespace B20_Ex02
             m_Ui.SetBoard(board);
         }
 
-        void shuffelValuesIntoBoard(ref UIBoard io_Board)
+        private void shuffelValuesIntoBoard(ref UIBoard io_Board)
         {
             int width = io_Board.Width;
             int height = io_Board.Height;
@@ -142,38 +142,38 @@ namespace B20_Ex02
             }
         }
 
-        void calculateMoveResult(Move i_Move)
+        private void calculateMoveResult(Move i_Move)
         {
             bool matchingCards = checkIfMatchingCards(i_Move);
 
             if (!matchingCards)
             {
                 System.Threading.Thread.Sleep(2000);
-                m_Logic.undoMove(i_Move);
-                m_Logic.switchPlayers();
+                m_Logic.UndoMove(i_Move);
+                m_Logic.SwitchPlayers();
                 clearAndPrintBoard();
             }
             else
             {
-                m_Logic.givePointToCurrentPlayer();
+                m_Logic.GivePointToCurrentPlayer();
             }
         }
 
-        bool checkIfMatchingCards(Move i_Move)
+        private bool checkIfMatchingCards(Move i_Move)
         {
-            Location locationOfFirstCard = i_Move.getLocationOfFirstCard();
-            Location locationOfSecondCard = i_Move.getLocationOfSecondCard();
+            Location locationOfFirstCard = i_Move.GetLocationOfFirstCard();
+            Location locationOfSecondCard = i_Move.GetLocationOfSecondCard();
 
-            char firstValue = m_Ui.getCardValue(locationOfFirstCard);
-            char secondValue = m_Ui.getCardValue(locationOfSecondCard);
+            char firstValue = m_Ui.GetCardValue(locationOfFirstCard);
+            char secondValue = m_Ui.GetCardValue(locationOfSecondCard);
 
             return firstValue.Equals(secondValue);
         }
 
         private void printGameResult()
         {
-            Player winnerPlayer = newLogic.GetWinner(); //להשתמש בשדה לוג'יק שאביטל יצרה
-            if (!quitGame)
+            Player winnerPlayer = m_Logic.GetWinner(); //להשתמש בשדה לוג'יק שאביטל יצרה
+            if (!m_QuitGame)
             {
                 UI.printWinnerMessage(winnerPlayer);
             }
@@ -185,38 +185,50 @@ namespace B20_Ex02
 
         private void initializePlayers()
         {
-            string player1Name, player2Name, player2Type;
-            player1Name = UI.getPlayerName();
-            newLogic.addPlayer(player1Name, "Human", true);
-            player2Type = UI.getOpponentType();
-            newLogic.addPlayer(player2Name, player2Type, false);
+            string player1Name, player2Name;
+            Player.ePlayerType player2Type;
+            player1Name = m_Ui.GetPlayerName("Player no. 1");
+            m_Logic.AddPlayer(player1Name, "Human", true);
+            player2Type = m_Ui.GetOpponentType(player1Name);
+            if(player2Type == "Computer")
+            {
+                player2Name = "Computer";
+            }
+            else
+            {
+                player2Name = m_Ui.GetPlayerName("Player no. 1");
+            }
+            m_Logic.AddPlayer(player2Name, player2Type, false);
         }
 
-        private void initMove(Player i_CurrentPlayer)
+        private Move initMove(Player i_CurrentPlayer)
         {
-            currentMove=new Move(i_CurrentPlayer);
+            Move currentMove = new Move(i_CurrentPlayer);
+
+            return currentMove;
         }
 
-        public void clearAndPrintBoard()
+        private void clearAndPrintBoard()
         {
             clearBoard();
             printBoard();
         }
 
-        public void clearBoard()
+        private void clearBoard()
         {
             Ex02.ConsoleUtils.Screen.Clear();
         }
 
-        public void printBoard()
+        private void printBoard()
         {
-            BoardCell[,] logicBoard = m_Logic.m_Board.Cells();
-            UI.printBoard(logicBoard);
+            BoardCell[,] logicBoard = m_Logic.Board.Cells;
+            m_Ui.PrintBoard(logicBoard);
         }
 
-        private void MakeValidMove(string i_PlayerMoveStr)
+        private void makeValidMove(string i_PlayerMoveStr, ref Move currentMove)
         {
-            Location cellLocation = m_Logic.getCellLocation(i_PlayerMoveStr);
+            Location cellLocation = m_Logic.GetCellLocation(i_PlayerMoveStr);
+            m_Logic.RevealCard(cellLocation);
             currentMove.SetLocation(cellLocation);
             clearAndPrintBoard();
         }

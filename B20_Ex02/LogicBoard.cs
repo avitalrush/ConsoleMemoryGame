@@ -57,5 +57,10 @@ namespace B20_Ex02
         {
             m_Cells[i_CardLocationOnBoard.Column, i_CardLocationOnBoard.Row].isHidden = true;
         }
+
+        public void RevealCard(Location i_CardLocationOnBoard)
+        {
+            m_Cells[i_CardLocationOnBoard.Column, i_CardLocationOnBoard.Row].isHidden = false;
+        }
     }
 }

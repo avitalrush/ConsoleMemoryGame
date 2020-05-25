@@ -24,20 +24,20 @@ namespace B20_Ex02
 
         // // 'get input from user' METHODS:
 
-        public int getBoardWidth()
+        public int GetBoardWidth()
         {
-            return getDimension("width");
+            return GetDimension("width");
         }
 
-        public int getBoardHeight()
+        public int GetBoardHeight()
         {
-            return getDimension("height");
+            return GetDimension("height");
         }
 
-        private int getDimension(string dimension)
+        public int GetDimension(string i_Dimension)
         {
-            string msg = string.Format("Please enter the board's {0} (between 4-6):", dimension);
-            string invalidMsg = string.Format("Invalid {0}. Please enter the board's {0} (between 4-6):", dimension);
+            string msg = string.Format("Please enter the board's {0} (between 4-6):", i_Dimension);
+            string invalidMsg = string.Format("Invalid {0}. Please enter the board's {0} (between 4-6):", i_Dimension);
             bool inputIsValid = true;
             string dimensionStr;
             int dimensionNum;
@@ -46,7 +46,7 @@ namespace B20_Ex02
             {
                 Console.WriteLine(msg);
                 dimensionStr = Console.ReadLine();
-                inputIsValid = validateDimension(dimensionStr);
+                inputIsValid = ValidateDimension(dimensionStr);
 
                 if (!inputIsValid)
                 {
@@ -60,14 +60,47 @@ namespace B20_Ex02
             return dimensionNum;
         }
 
-        public bool validateDimension(string dimension)
+        public bool ValidateDimension(string i_Dimension)
         {
-            return dimension == "4" || dimension == "5" || dimension == "6";
+            return i_Dimension == "4" || i_Dimension == "5" || i_Dimension == "6";
         }
 
-        public char getCardValue(Location i_LocationOnBoard)
+        public string GetPlayerName(string i_NumberOfPlayer)
         {
-            return m_Board.getCardValue(i_LocationOnBoard);
+            string msg = string.Format("Hello {0}, what is your name? ", i_NumberOfPlayer);
+            Console.WriteLine(msg);
+            return Console.ReadLine();
+        }
+
+        public Player.ePlayerType GetOpponentType(string i_PlayerOneName)
+        {
+            string typeChosen;
+            bool validType = false;
+            string msg = string.Format("{0}, please choose your opponent. for Human press 0, for Computer press 1: ", i_PlayerOneName);
+            string errorMsg = string.Format("Invalid key. for Human press 0, for Computer press 1: ");
+
+            Console.WriteLine(msg);
+            typeChosen = Console.ReadLine();
+            do
+            {
+                if(typeChosen == "0" || typeChosen == "1")
+                {
+                    validType = true;
+                }
+                else
+                {
+                    Console.WriteLine(errorMsg);
+                    typeChosen = Console.ReadLine();
+                }
+            }
+            while (!validType);
+
+            return (Player.ePlayerType)Convert.ToInt32(typeChosen);
+        }
+
+        public char GetCardValue(Location i_LocationOnBoard)
+        {
+            return m_Board.GetCardValue(i_LocationOnBoard);
         }
 
         /*
@@ -117,7 +150,7 @@ namespace B20_Ex02
         }
          */
 
-        private char AskUserForAnotherRound()
+        public char AskUserForAnotherRound()
         {
             char userDesicion;
             Console.WriteLine("Do you want to play another round? Y for Yes, N for No : ");
@@ -135,7 +168,7 @@ namespace B20_Ex02
             return userDesicion;
         }
 
-        private string getValidMoveFromUser()
+        public string GetValidMoveFromUser()
         {
             string userMoveStr;
             Console.WriteLine("Choose a card : ");
@@ -144,21 +177,21 @@ namespace B20_Ex02
             return userMoveStr;
         }
 
-        private void printBoard(BoardCell[,] i_LogicBoardCells)
+        public void PrintBoard(BoardCell[,] i_LogicBoardCells)
         {
             StringBuilder frameRow = new StringBuilder();
             StringBuilder seperationRow = new StringBuilder();
             StringBuilder boardRow = new StringBuilder();
             StringBuilder fullBoard = new StringBuilder();
 
-            createFrameRow(ref fullBoard, ref frameRow, m_Board.Width);
-            createSeperationRow(ref fullBoard, ref seperationRow, m_Board.Width);
-            createBoardRows(ref fullBoard, ref boardRow, ref seperationRow, i_LogicBoardCells, m_Board.Height, m_Board.Width);
+            CreateFrameRow(ref fullBoard, ref frameRow, m_Board.Width);
+            CreateSeperationRow(ref fullBoard, ref seperationRow, m_Board.Width);
+            CreateBoardRows(ref fullBoard, ref boardRow, ref seperationRow, i_LogicBoardCells, m_Board.Height, m_Board.Width);
 
             Console.WriteLine(fullBoard);
         }
 
-        private void createFrameRow(ref StringBuilder i_FullBoard, ref StringBuilder i_FrameRow, int i_Width)
+        public void CreateFrameRow(ref StringBuilder i_FullBoard, ref StringBuilder i_FrameRow, int i_Width)
         {
             char column = 'A';
             int i;
@@ -170,10 +203,10 @@ namespace B20_Ex02
                 i_FrameRow.Append("   ");
             }
 
-            assembleFullBoard(ref i_FullBoard, ref i_FrameRow);
+            AssembleFullBoard(ref i_FullBoard, ref i_FrameRow);
         }
 
-        private void createSeperationRow(ref StringBuilder i_FullBoard, ref StringBuilder i_SeparationRow, int i_Width)
+        public void CreateSeperationRow(ref StringBuilder i_FullBoard, ref StringBuilder i_SeparationRow, int i_Width)
         {
             int i;
 
@@ -183,11 +216,11 @@ namespace B20_Ex02
                 i_SeparationRow.Append('=');
             }
 
-            assembleFullBoard(ref i_FullBoard, ref i_SeparationRow);
+            AssembleFullBoard(ref i_FullBoard, ref i_SeparationRow);
         }
 
-        private void createBoardRows(ref StringBuilder i_FullBoard, ref StringBuilder i_BoardRow, ref StringBuilder i_SeparationRow, 
-                                     BoardCell[,] i_LogicBoardCells, int i_Height, int i_Width)
+        public void CreateBoardRows(ref StringBuilder i_FullBoard, ref StringBuilder i_BoardRow, ref StringBuilder i_SeparationRow, 
+                                    BoardCell[,] i_LogicBoardCells, int i_Height, int i_Width)
         {
             int i, j;
             Location cardLocation;
@@ -208,19 +241,19 @@ namespace B20_Ex02
                     else
                     {
                         cardLocation = new Location(i - 1, j - 1);
-                        i_BoardRow.Append(m_Board.getCardValue(cardLocation));
+                        i_BoardRow.Append(m_Board.GetCardValue(cardLocation));
                     }
 
                     i_BoardRow.Append(' ');
                     i_BoardRow.Append('|');
                 }
 
-                assembleFullBoard(ref i_FullBoard, ref i_BoardRow);
-                assembleFullBoard(ref i_FullBoard, ref i_SeparationRow);
+                AssembleFullBoard(ref i_FullBoard, ref i_BoardRow);
+                AssembleFullBoard(ref i_FullBoard, ref i_SeparationRow);
             }
         }
 
-        private void assembleFullBoard(ref StringBuilder i_FullBoard, ref StringBuilder i_RowToBeAppended)
+        public void AssembleFullBoard(ref StringBuilder i_FullBoard, ref StringBuilder i_RowToBeAppended)
         {
             i_FullBoard.AppendLine(i_RowToBeAppended.ToString());
         }
