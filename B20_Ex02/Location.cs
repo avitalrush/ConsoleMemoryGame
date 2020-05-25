@@ -4,7 +4,7 @@ using System.Text;
 
 namespace B20_Ex02
 {
-    class Location
+    public class Location // Shaked defined this class as public to solve problem when UIBoard tried to create object of this class
     {
         private int column;
         private int row;

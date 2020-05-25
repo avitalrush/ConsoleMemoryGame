@@ -2,12 +2,11 @@
 using System.Collections.Generic;
 using System.Text;
 
-
 namespace B20_Ex02
 {
     public class Program
     {
-        void main()
+        public static void main()
         {
             Game game = new Game();
             game.Start();

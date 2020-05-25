@@ -5,8 +5,7 @@ using System.Text;
 
 namespace B20_Ex02
 {
-
-    class UI
+    public class UI
     {
         // MEMBERS:
         private UIBoard m_Board;
@@ -14,7 +13,6 @@ namespace B20_Ex02
         // CTOR:
         public UI()
         {
-            
         }
 
         // METHODS:
@@ -62,9 +60,9 @@ namespace B20_Ex02
             return dimensionNum;
         }
 
-        bool validateDimension(string dimension)
+        public bool validateDimension(string dimension)
         {
-            return (dimension == "4" || dimension == "5" || dimension == "6");
+            return dimension == "4" || dimension == "5" || dimension == "6";
         }
 
         public char getCardValue(Location i_LocationOnBoard)
@@ -174,18 +172,20 @@ namespace B20_Ex02
 
             assembleFullBoard(ref i_FullBoard, ref i_FrameRow);
         }
+
         private void createSeperationRow(ref StringBuilder i_FullBoard, ref StringBuilder i_SeparationRow, int i_Width)
         {
             int i;
 
             i_SeparationRow.Append("  ");
-            for (i = 1; i <= 4 * i_Width + 1; i++)
+            for (i = 1; i <= (4 * i_Width) + 1; i++)
             {
                 i_SeparationRow.Append('=');
             }
 
             assembleFullBoard(ref i_FullBoard, ref i_SeparationRow);
         }
+
         private void createBoardRows(ref StringBuilder i_FullBoard, ref StringBuilder i_BoardRow, ref StringBuilder i_SeparationRow, 
                                      BoardCell[,] i_LogicBoardCells, int i_Height, int i_Width)
         {
@@ -210,6 +210,7 @@ namespace B20_Ex02
                         cardLocation = new Location(i - 1, j - 1);
                         i_BoardRow.Append(m_Board.getCardValue(cardLocation));
                     }
+
                     i_BoardRow.Append(' ');
                     i_BoardRow.Append('|');
                 }
@@ -218,6 +219,7 @@ namespace B20_Ex02
                 assembleFullBoard(ref i_FullBoard, ref i_SeparationRow);
             }
         }
+
         private void assembleFullBoard(ref StringBuilder i_FullBoard, ref StringBuilder i_RowToBeAppended)
         {
             i_FullBoard.AppendLine(i_RowToBeAppended.ToString());

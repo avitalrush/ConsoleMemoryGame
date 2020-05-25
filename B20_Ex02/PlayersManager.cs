@@ -4,7 +4,7 @@ using System.Text;
 
 namespace B20_Ex02
 {
-    class PlayersManager
+    public class PlayersManager
     {
         public Player m_Player1;
         public Player m_Player2;
@@ -27,7 +27,7 @@ namespace B20_Ex02
 
         public void SwitchPlayers()
         {
-            if(m_CurrentPlayer == m_Player1)
+            if (m_CurrentPlayer == m_Player1)
             {
                 m_Player1.IsMyTurn = false;
                 m_Player2.IsMyTurn = true;
@@ -40,6 +40,7 @@ namespace B20_Ex02
                 m_CurrentPlayer = m_Player1;
             }
         }
+
         public void GameEndedInTie()
         {
             if (m_Player1.Points == m_Player2.Points)
@@ -67,6 +68,7 @@ namespace B20_Ex02
                 m_Winner = null;
             }
         }
+
         public Player WhoWonTheGame()
         {
             GetWinner();
