@@ -48,7 +48,7 @@ namespace B20_Ex02
             set { m_CurrentPlayer = value; }
         }
 
-        public void GameEndedInTie()
+        private void gameEndedInTie()
         {
             if (m_Player1.Points == m_Player2.Points)
             {
@@ -56,10 +56,10 @@ namespace B20_Ex02
             }
         }
 
-        public void GetWinner()
+        public Player WhoWonTheGame()
         {
-            GameEndedInTie();
-            if(!m_EndedInTie)
+            gameEndedInTie();
+            if (!m_EndedInTie)
             {
                 if (m_Player1.Points > m_Player2.Points)
                 {
@@ -74,11 +74,6 @@ namespace B20_Ex02
             {
                 m_Winner = null;
             }
-        }
-
-        public Player WhoWonTheGame()
-        {
-            GetWinner();
 
             return m_Winner;
         }

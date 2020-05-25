@@ -4,7 +4,7 @@ using System.Text;
 
 namespace B20_Ex02
 {
-    class Logic
+    public class Logic
     {
         // MEMBERS:
         private LogicBoard m_Board;

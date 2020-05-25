@@ -4,7 +4,7 @@ using System.Text;
 
 namespace B20_Ex02
 {
-    class LogicBoard
+    public class LogicBoard
     {
         // MEMBERS:
         private readonly int r_width, r_height;

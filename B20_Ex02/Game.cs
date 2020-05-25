@@ -4,7 +4,7 @@ using System.Text;
 
 namespace B20_Ex02
 {
-    class Game
+    public class Game
     {
         // MEMBERS:
         //private const int k_NumOfPlayers = 2;

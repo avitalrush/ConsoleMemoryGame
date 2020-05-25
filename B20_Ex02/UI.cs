@@ -184,14 +184,14 @@ namespace B20_Ex02
             StringBuilder boardRow = new StringBuilder();
             StringBuilder fullBoard = new StringBuilder();
 
-            CreateFrameRow(ref fullBoard, ref frameRow, m_Board.Width);
-            CreateSeperationRow(ref fullBoard, ref seperationRow, m_Board.Width);
-            CreateBoardRows(ref fullBoard, ref boardRow, ref seperationRow, i_LogicBoardCells, m_Board.Height, m_Board.Width);
+            createFrameRow(ref fullBoard, ref frameRow, m_Board.Width);
+            createSeperationRow(ref fullBoard, ref seperationRow, m_Board.Width);
+            createBoardRows(ref fullBoard, ref boardRow, ref seperationRow, i_LogicBoardCells, m_Board.Height, m_Board.Width);
 
             Console.WriteLine(fullBoard);
         }
 
-        public void CreateFrameRow(ref StringBuilder i_FullBoard, ref StringBuilder i_FrameRow, int i_Width)
+        private void createFrameRow(ref StringBuilder i_FullBoard, ref StringBuilder i_FrameRow, int i_Width)
         {
             char column = 'A';
             int i;
@@ -203,10 +203,10 @@ namespace B20_Ex02
                 i_FrameRow.Append("   ");
             }
 
-            AssembleFullBoard(ref i_FullBoard, ref i_FrameRow);
+            assembleFullBoard(ref i_FullBoard, ref i_FrameRow);
         }
 
-        public void CreateSeperationRow(ref StringBuilder i_FullBoard, ref StringBuilder i_SeparationRow, int i_Width)
+        private void createSeperationRow(ref StringBuilder i_FullBoard, ref StringBuilder i_SeparationRow, int i_Width)
         {
             int i;
 
@@ -216,11 +216,11 @@ namespace B20_Ex02
                 i_SeparationRow.Append('=');
             }
 
-            AssembleFullBoard(ref i_FullBoard, ref i_SeparationRow);
+            assembleFullBoard(ref i_FullBoard, ref i_SeparationRow);
         }
 
-        public void CreateBoardRows(ref StringBuilder i_FullBoard, ref StringBuilder i_BoardRow, ref StringBuilder i_SeparationRow, 
-                                    BoardCell[,] i_LogicBoardCells, int i_Height, int i_Width)
+        private void createBoardRows(ref StringBuilder i_FullBoard, ref StringBuilder i_BoardRow, ref StringBuilder i_SeparationRow, 
+                                     BoardCell[,] i_LogicBoardCells, int i_Height, int i_Width)
         {
             int i, j;
             Location cardLocation;
@@ -248,12 +248,12 @@ namespace B20_Ex02
                     i_BoardRow.Append('|');
                 }
 
-                AssembleFullBoard(ref i_FullBoard, ref i_BoardRow);
-                AssembleFullBoard(ref i_FullBoard, ref i_SeparationRow);
+                assembleFullBoard(ref i_FullBoard, ref i_BoardRow);
+                assembleFullBoard(ref i_FullBoard, ref i_SeparationRow);
             }
         }
 
-        public void AssembleFullBoard(ref StringBuilder i_FullBoard, ref StringBuilder i_RowToBeAppended)
+        private void assembleFullBoard(ref StringBuilder i_FullBoard, ref StringBuilder i_RowToBeAppended)
         {
             i_FullBoard.AppendLine(i_RowToBeAppended.ToString());
         }
