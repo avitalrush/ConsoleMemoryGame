@@ -4,7 +4,7 @@ using System.Text;
 
 namespace B20_Ex02
 {
-    class Card
+    public class Card
     {
         private char value;
 
@@ -14,11 +14,11 @@ namespace B20_Ex02
             {
                 return value;
             }
+
             set
             {
-
+                this.value = value;
             }
         }
-
     }
 }

@@ -4,7 +4,7 @@ using System.Text;
 
 namespace B20_Ex02
 {
-    class Logic
+    public class Logic
     {
         // MEMBERS:
         private LogicBoard m_Board;
@@ -13,11 +13,9 @@ namespace B20_Ex02
         // CTOR:
         public Logic()
         {
-            
         }
 
         // METHODS:
-
         public LogicBoard Board
         {
             get
@@ -31,12 +29,12 @@ namespace B20_Ex02
             m_Board = i_Board;
         }
 
-        public Player getCurrentPlayer()
+        public Player GetCurrentPlayer()
         {
-            return m_AllPlayers.getCurrentPlayer();
+            return m_AllPlayers.GetCurrentPlayer;
         }
 
-        public List<string> getValidMovesList()
+        public List<string> GetValidMovesList()
         {
             // method creates and returns validMovesList + concatenates "Q" string
 
@@ -52,17 +50,18 @@ namespace B20_Ex02
                 {
                     if(tempCells[i, j].isHidden)
                     {
-                        strIndex = createStringIndex(i, j);
+                        strIndex = CreateStringIndex(i, j);
                         validMoves.Add(strIndex);
                     }
                 }
             }
+
             validMoves.Add("Q");
 
             return validMoves;
         }
 
-        private string createStringIndex(int i_column, int i_row)
+        public string CreateStringIndex(int i_column, int i_row)
         {
             // method gets i=E, j=4 --> returns "E4"
 
@@ -72,29 +71,30 @@ namespace B20_Ex02
             return strIndex;
         }
 
-        public bool checkIfValidMovesLeft()
+        public bool CheckIfValidMovesLeft()
         {
-            List<string> validMoves = getValidMovesList();
+            List<string> validMoves = GetValidMovesList();
             return validMoves.Count == 0;
         }
 
-        public void undoMove(Move i_Move)
+        public void UndoMove(Move i_Move)
         {
-            Location locationOfFirstCard = i_Move.getLocationOfFirstCard();
-            Location locationOfSecondCard = i_Move.getLocationOfSecondCard();
+            Location locationOfFirstCard = i_Move.GetLocationOfFirstCard();
+            Location locationOfSecondCard = i_Move.GetLocationOfSecondCard();
 
             m_Board.HideCard(locationOfFirstCard);
             m_Board.HideCard(locationOfSecondCard);
         }
 
-        public void switchPlayers()
+        public void SwitchPlayers()
         {
-            m_AllPlayers.switchPlayers();
+            m_AllPlayers.SwitchPlayers();
         }
 
-        public void givePointToCurrentPlayer()
+        public void GivePointToCurrentPlayer()
         {
-            m_AllPlayers.givePointToCurrentPlayer();
+            m_AllPlayers.GivePointToCurrentPlayer();
+        }
 
         public Player GetWinner()
         {
@@ -106,14 +106,15 @@ namespace B20_Ex02
             m_AllPlayers.CreatePlayer(i_Name, i_PlayerType, i_IsItMyTurn);
         }
 
-        public void givePoint()
+        public void RevealCard(Location i_CellLocation)
         {
-            m_AllPlayers.GivePointTo();
+            m_Board.RevealCard(i_CellLocation);
         }
 
-        public Location getCellLocation(string i_PlayerMoveStr)
+        public Location GetCellLocation(string i_PlayerMoveStr)
         {
-            return m_Board.revealCardInCell(i_PlayerMoveStr);
+            Location cellLocation = new Location(i_PlayerMoveStr[0], i_PlayerMoveStr[1]);
+            return cellLocation;
         }
     }
 }

@@ -5,8 +5,7 @@ using System.Text;
 
 namespace B20_Ex02
 {
-
-    class UI
+    public class UI
     {
         // MEMBERS:
         private UIBoard m_Board;
@@ -14,32 +13,31 @@ namespace B20_Ex02
         // CTOR:
         public UI()
         {
-            
         }
 
         // METHODS:
         public void SetBoard(int i_Width, int i_Height)
         {
             m_Board = new UIBoard(i_Width, i_Height);
-            shuffelValuesIntoBoard(ref m_Board);
+            shuffleValuesIntoBoard(ref m_Board);
         }
 
         // // 'get input from user' METHODS:
 
-        public int getBoardWidth()
+        public int GetBoardWidth()
         {
-            return getDimension("width");
+            return GetDimension("width");
         }
 
-        public int getBoardHeight()
+        public int GetBoardHeight()
         {
-            return getDimension("height");
+            return GetDimension("height");
         }
 
-        private int getDimension(string dimension)
+        public int GetDimension(string i_Dimension)
         {
-            string msg = string.Format("Please enter the board's {0} (between 4-6):", dimension);
-            string invalidMsg = string.Format("Invalid {0}. Please enter the board's {0} (between 4-6):", dimension);
+            string msg = string.Format("Please enter the board's {0} (between 4-6):", i_Dimension);
+            string invalidMsg = string.Format("Invalid {0}. Please enter the board's {0} (between 4-6):", i_Dimension);
             bool inputIsValid = true;
             string dimensionStr;
             int dimensionNum;
@@ -48,7 +46,7 @@ namespace B20_Ex02
             {
                 Console.WriteLine(msg);
                 dimensionStr = Console.ReadLine();
-                inputIsValid = validateDimension(dimensionStr);
+                inputIsValid = ValidateDimension(dimensionStr);
 
                 if (!inputIsValid)
                 {
@@ -62,14 +60,81 @@ namespace B20_Ex02
             return dimensionNum;
         }
 
-        bool validateDimension(string dimension)
+        public bool ValidateDimension(string i_Dimension)
         {
-            return (dimension == "4" || dimension == "5" || dimension == "6");
+            return i_Dimension == "4" || i_Dimension == "5" || i_Dimension == "6";
         }
 
-        public char getCardValue(Location i_LocationOnBoard)
+        public string GetPlayerName(string i_NumberOfPlayer)
         {
-            return m_Board.getCardValue(i_LocationOnBoard);
+            string msg = string.Format("Hello {0}, what is your name? ", i_NumberOfPlayer);
+            Console.WriteLine(msg);
+            return Console.ReadLine();
+        }
+
+        public int GetOpponentType(string i_PlayerOneName)
+        {
+            int typeChosen;
+            bool validType = false;
+            string msg = string.Format("{0}, please choose your opponent. for Human press 0, for Computer press 1: ", i_PlayerOneName);
+            string errorMsg = string.Format("Invalid key. for Human press 0, for Computer press 1: ");
+
+            Console.WriteLine(msg);
+            typeChosen = int.Parse(Console.ReadLine());
+            do
+            {
+                if(typeChosen == 0 || typeChosen == 1)
+                {
+                    validType = true;
+                }
+                else
+                {
+                    Console.WriteLine(errorMsg);
+                    typeChosen = int.Parse(Console.ReadLine());
+                }
+            }
+            while (!validType);
+
+            return typeChosen;
+        }
+
+        public string GetValidMoveFromUser(List<string> i_ValidMoves)
+        {
+            string userMoveStr;
+            bool validChoose = false;
+            string msg = string.Format("Please choose a card: ");
+            string errorMsg = string.Format("Invalid choose. Please choose a card: ");
+
+            Console.WriteLine(msg);
+            userMoveStr = Console.ReadLine();
+            do
+            {
+                if (CheckValidityOfMove(userMoveStr, i_ValidMoves))
+                {
+                    validChoose = true;
+                }
+                else
+                {
+                    Console.WriteLine(errorMsg);
+                    userMoveStr = Console.ReadLine();
+                }
+            }
+            while (!validChoose);
+
+            return userMoveStr;
+        }
+
+        private bool CheckValidityOfMove(string i_UserMoveStr, List<string> i_ValidMoves)
+        {
+            bool validMove;
+            validMove = i_ValidMoves.Exists(x => x == i_UserMoveStr);
+
+            return validMove;
+        }
+
+        public char GetCardValue(Location i_LocationOnBoard)
+        {
+            return m_Board.GetCardValue(i_LocationOnBoard);
         }
 
         /*
@@ -119,9 +184,10 @@ namespace B20_Ex02
         }
          */
 
-        private char AskUserForAnotherRound()
+        public bool AskUserForAnotherRound()
         {
             char userDesicion;
+            bool playAgain;
             Console.WriteLine("Do you want to play another round? Y for Yes, N for No : ");
             userDesicion = char.Parse(Console.ReadLine());
             do
@@ -134,10 +200,20 @@ namespace B20_Ex02
             }
             while(!(userDesicion == 'Y' || userDesicion == 'N'));
 
-            return userDesicion;
+            if(userDesicion == 'Y')
+            {
+                playAgain = true;
+            }
+
+            else
+            {
+                playAgain = false;
+            }
+
+            return playAgain;
         }
 
-        private string getValidMoveFromUser()
+        public string GetValidMoveFromUser()
         {
             string userMoveStr;
             Console.WriteLine("Choose a card : ");
@@ -146,56 +222,95 @@ namespace B20_Ex02
             return userMoveStr;
         }
 
-        private void printBoard(BoardCell[,] i_LogicBoardCells)
+        public void PrintBoard(BoardCell[,] i_LogicBoardCells)
         {
-            char column = 'A';
-            int i = 0, j = 0;
-
-            StringBuilder firstLine = new StringBuilder();
+            StringBuilder frameRow = new StringBuilder();
             StringBuilder seperationRow = new StringBuilder();
             StringBuilder boardRow = new StringBuilder();
             StringBuilder fullBoard = new StringBuilder();
 
-            firstLine.Append("    ");
-            for (i = 1; i <=m_Board.Height; i++)
+            createFrameRow(ref fullBoard, ref frameRow, m_Board.Width);
+            createSeperationRow(ref fullBoard, ref seperationRow, m_Board.Width);
+            createBoardRows(ref fullBoard, ref boardRow, ref seperationRow, i_LogicBoardCells, m_Board.Height, m_Board.Width);
+
+            Console.WriteLine(fullBoard);
+        }
+
+        private void createFrameRow(ref StringBuilder i_FullBoard, ref StringBuilder i_FrameRow, int i_Width)
+        {
+            char column = 'A';
+            int i;
+
+            i_FrameRow.Append("   ");
+            for (i = 1; i <= i_Width; i++)
             {
-                firstLine.Append(column + i);
-                firstLine.Append("  ");
+                i_FrameRow.Append(column++);
+                i_FrameRow.Append("   ");
             }
 
-            fullBoard.AppendLine(firstLine.ToString());
+            assembleFullBoard(ref i_FullBoard, ref i_FrameRow);
+        }
 
-            seperationRow.Append("   ");
-            for (i = 1; i <= 4*m_Board.Width+1; i++)
+        private void createSeperationRow(ref StringBuilder i_FullBoard, ref StringBuilder i_SeparationRow, int i_Width)
+        {
+            int i;
+
+            i_SeparationRow.Append("  ");
+            for (i = 1; i <= (4 * i_Width) + 1; i++)
             {
-                seperationRow.Append('=');
+                i_SeparationRow.Append('=');
             }
 
-            fullBoard.AppendLine(seperationRow.ToString());
+            assembleFullBoard(ref i_FullBoard, ref i_SeparationRow);
+        }
 
+        private void createBoardRows(ref StringBuilder i_FullBoard, ref StringBuilder i_BoardRow, ref StringBuilder i_SeparationRow, 
+                                     BoardCell[,] i_LogicBoardCells, int i_Height, int i_Width)
+        {
+            int i, j;
+            Location cardLocation;
 
-            for (i = 1; i <= m_Board.Height; i++)
+            for (i = 1; i <= i_Height; i++)
             {
-                boardRow.Remove(0, 4 * m_Board.Width + 2);
-                boardRow.Append(i);
-                boardRow.Append(' ');
-                boardRow.Append(|);
-                for (j = 1; j < m_Board.Width; j++)
+                i_BoardRow.Remove(0, i_BoardRow.Length);
+                i_BoardRow.Append(i);
+                i_BoardRow.Append(' ');
+                i_BoardRow.Append('|');
+                for (j = 1; j <= i_Width; j++)
                 {
-                    boardRow.Append(' ');
-                    if(i_LogicBoardCells[i - 1, j - 1].m_IsHidden)
+                    i_BoardRow.Append(' ');
+                    if (i_LogicBoardCells[i - 1, j - 1].isHidden)
                     {
-                        boardRow.Append(' ');
+                        i_BoardRow.Append(' ');
                     }
                     else
                     {
-                        boardRow.Append(m_Board.m_Cards[i - 1, j - 1]);
+                        cardLocation = new Location(i - 1, j - 1);
+                        i_BoardRow.Append(m_Board.GetCardValue(cardLocation));
                     }
 
+                    i_BoardRow.Append(' ');
+                    i_BoardRow.Append('|');
                 }
-                fullBoard.AppendLine(boardRow.ToString());
-                fullBoard.AppendLine(seperationRow.ToString());
+
+                assembleFullBoard(ref i_FullBoard, ref i_BoardRow);
+                assembleFullBoard(ref i_FullBoard, ref i_SeparationRow);
             }
+        }
+
+        private void assembleFullBoard(ref StringBuilder i_FullBoard, ref StringBuilder i_RowToBeAppended)
+        {
+            i_FullBoard.AppendLine(i_RowToBeAppended.ToString());
+        }
+
+        public void PrintWinnerMessage(string i_WinnerPlayer)
+        {
+
+        }
+
+        public void PrintGoodByeMessage()
+        {
+
         }
     }
 }

@@ -4,7 +4,7 @@ using System.Text;
 
 namespace B20_Ex02
 {
-    class LogicBoard
+    public class LogicBoard
     {
         // MEMBERS:
         private readonly int r_width, r_height;
@@ -24,6 +24,7 @@ namespace B20_Ex02
                     tempCells[i, j] = new BoardCell();
                 }
             }
+
             m_Cells = tempCells;
         }
 
@@ -56,6 +57,11 @@ namespace B20_Ex02
         public void HideCard(Location i_CardLocationOnBoard)
         {
             m_Cells[i_CardLocationOnBoard.Column, i_CardLocationOnBoard.Row].isHidden = true;
+        }
+
+        public void RevealCard(Location i_CardLocationOnBoard)
+        {
+            m_Cells[i_CardLocationOnBoard.Column, i_CardLocationOnBoard.Row].isHidden = false;
         }
     }
 }

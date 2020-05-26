@@ -4,7 +4,7 @@ using System.Text;
 
 namespace B20_Ex02
 {
-    class Move
+    public class Move
     {
         private Location firstCardLocation;
         private Location secondCardLocation;
@@ -27,11 +27,12 @@ namespace B20_Ex02
             }
         }
 
-        public Location GetFirstCardLocation()
+        public Location GetLocationOfFirstCard()
         {
             return firstCardLocation;
         }
-        public Location GetSecondCardLocation()
+
+        public Location GetLocationOfSecondCard()
         {
             return secondCardLocation;
         }

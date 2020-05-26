@@ -4,12 +4,12 @@ using System.Text;
 
 namespace B20_Ex02
 {
-    class PlayersManager
+    public class PlayersManager
     {
         public Player m_Player1;
         public Player m_Player2;
-        public Player m_CurrentPlayer;
-        public Player m_Winner;
+        private Player m_CurrentPlayer;
+        private Player m_Winner;
         private bool m_EndedInTie = false;
 
         public void CreatePlayer(string i_Name, Player.ePlayerType i_PlayerType, bool i_IsItMyTurn)
@@ -27,7 +27,7 @@ namespace B20_Ex02
 
         public void SwitchPlayers()
         {
-            if(m_CurrentPlayer == m_Player1)
+            if (m_CurrentPlayer == m_Player1)
             {
                 m_Player1.IsMyTurn = false;
                 m_Player2.IsMyTurn = true;
@@ -40,7 +40,15 @@ namespace B20_Ex02
                 m_CurrentPlayer = m_Player1;
             }
         }
-        public void GameEndedInTie()
+
+        public Player GetCurrentPlayer
+        {
+            get { return m_CurrentPlayer; }
+
+            set { m_CurrentPlayer = value; }
+        }
+
+        private void gameEndedInTie()
         {
             if (m_Player1.Points == m_Player2.Points)
             {
@@ -48,10 +56,10 @@ namespace B20_Ex02
             }
         }
 
-        public void GetWinner()
+        public Player WhoWonTheGame()
         {
-            GameEndedInTie();
-            if(!m_EndedInTie)
+            gameEndedInTie();
+            if (!m_EndedInTie)
             {
                 if (m_Player1.Points > m_Player2.Points)
                 {
@@ -66,15 +74,11 @@ namespace B20_Ex02
             {
                 m_Winner = null;
             }
-        }
-        public Player WhoWonTheGame()
-        {
-            GetWinner();
 
             return m_Winner;
         }
 
-        public void GivePointTo()
+        public void GivePointToCurrentPlayer()
         {
             m_CurrentPlayer.Points++;
         }
