@@ -193,11 +193,13 @@ namespace B20_Ex02
         private void initializePlayers()
         {
             string player1Name, player2Name;
+            int player2TypeInt;
             Player.ePlayerType player2Type;
             player1Name = m_Ui.GetPlayerName("Player no. 1");
             m_Logic.AddPlayer(player1Name, Player.ePlayerType.Human, true);
-            player2Type = m_Ui.GetOpponentType(player1Name);
-            if(player2Type.ToString() == "Computer")
+            player2TypeInt = m_Ui.GetOpponentType(player1Name);
+            player2Type = (Player.ePlayerType)player2TypeInt;
+            if (player2TypeInt == 0)
             {
                 player2Name = "Computer";
             }

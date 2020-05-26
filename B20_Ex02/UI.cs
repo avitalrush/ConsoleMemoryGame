@@ -72,30 +72,30 @@ namespace B20_Ex02
             return Console.ReadLine();
         }
 
-        public Player.ePlayerType GetOpponentType(string i_PlayerOneName)
+        public int GetOpponentType(string i_PlayerOneName)
         {
-            string typeChosen;
+            int typeChosen;
             bool validType = false;
             string msg = string.Format("{0}, please choose your opponent. for Human press 0, for Computer press 1: ", i_PlayerOneName);
             string errorMsg = string.Format("Invalid key. for Human press 0, for Computer press 1: ");
 
             Console.WriteLine(msg);
-            typeChosen = Console.ReadLine();
+            typeChosen = int.Parse(Console.ReadLine());
             do
             {
-                if(typeChosen == "0" || typeChosen == "1")
+                if(typeChosen == 0 || typeChosen == 1)
                 {
                     validType = true;
                 }
                 else
                 {
                     Console.WriteLine(errorMsg);
-                    typeChosen = Console.ReadLine();
+                    typeChosen = int.Parse(Console.ReadLine());
                 }
             }
             while (!validType);
 
-            return (Player.ePlayerType)Convert.ToInt32(typeChosen);
+            return typeChosen;
         }
 
         public string GetValidMoveFromUser(List<string> i_ValidMoves)
