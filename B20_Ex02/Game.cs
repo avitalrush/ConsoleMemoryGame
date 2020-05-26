@@ -24,13 +24,13 @@ namespace B20_Ex02
         public void Start()
         {
             initializePlayers();
-            while (m_AnotherRound && !m_QuitGame)
+            while(m_AnotherRound && !m_QuitGame)
             {
-                Run();
+                run();
             }
         }
 
-        public void Run()
+        private void run()
         {
             Player currentPlayer;
             Player winner;
@@ -45,28 +45,36 @@ namespace B20_Ex02
             /////////////////////////////////////////////////////////////
 
             initializeBoards();
-            printBoard();   // Game's method, who is a mediator --> asks Logic for his LogicBoard and sends it to UI for printing
+            printBoard(); // Game's method, who is a mediator --> asks Logic for his LogicBoard and sends it to UI for printing
 
-            while (validMovesLeft && !m_QuitGame)
+            while(validMovesLeft && !m_QuitGame)
             {
                 currentPlayer = m_Logic.GetCurrentPlayer();
                 currentMove = initMove(currentPlayer);
 
-                for (int i = 0; i < 2 && !m_QuitGame; i++)       // this is a move for one player, it has 2 parts (2 cards)
+                for(int i = 0; i < 2 && !m_QuitGame; i++) // this is a move for one player, it has 2 parts (2 cards)
                 {
-                    validMoves = m_Logic.GetValidMovesList();                                 // gets validMovesList, creates it from logicBoard + concatenates "Q" string
+                    validMoves =
+                        m_Logic
+                            .GetValidMovesList(); // gets validMovesList, creates it from logicBoard + concatenates "Q" string
 
                     //////// here we need cases in case currentPlayer.type == human --> continue like this, 
 
-                    moveStr = m_Ui.GetValidMoveFromUser(validMoves);                   // get move from user and checks validMoves for validity
+                    moveStr = m_Ui.GetValidMoveFromUser(
+                        validMoves); // get move from user and checks validMoves for validity
 
-                    if (moveStr.Equals("Q"))                                           // if user input is Q --> quit
+                    if(moveStr.Equals("Q")) // if user input is Q --> quit
                     {
                         m_QuitGame = true;
                     }
-                    else                                                                    // else - user input is surly VALID and we can continue
+                    else // else - user input is surly VALID and we can continue
                     {
-                        makeValidMove(moveStr,ref currentMove);         //change the name of the method because it's confusing, here it's only half of the move
+                        makeValidMove(
+                            moveStr,
+                            ref currentMove); //change the name of the method because it's confusing, here it's only half of the move
+                                              /////////////////////////////////////////////////////////////////////////////////////////
+                                              // Shaked's Answer: I fixed this method so it Is making a valid move and not half a move.
+                                              // Please check me about this 
                     }
                 }
 
@@ -79,7 +87,7 @@ namespace B20_Ex02
 
             printGameResult();
 
-            m_AnotherRound = m_Ui.askUserForAnotherRound();
+            m_AnotherRound = m_Ui.AskUserForAnotherRound();
         }
 
         private void initializeBoards()
@@ -100,7 +108,7 @@ namespace B20_Ex02
                 }
             }
             while(!validBoardSize);
-            
+
             InitializeLogicBoard(width, height);
             InitializeUIBoard(width, height);
         }
@@ -122,20 +130,19 @@ namespace B20_Ex02
         {
             UIBoard board = new UIBoard(i_Width, i_Height);
             //m_Ui.SetBoard(i_Width, i_Height);
-            shuffelValuesIntoBoard(ref board);
+            shuffleValuesIntoBoard(ref board);
             m_Ui.SetBoard(board);
         }
 
-        private void shuffelValuesIntoBoard(ref UIBoard io_Board)
+        private void shuffleValuesIntoBoard(ref UIBoard io_Board)
         {
             int width = io_Board.Width;
             int height = io_Board.Height;
             int numOfUniqueValues = (width * height) / 2;
             char[] boardValues = new char[numOfUniqueValues];
 
-
             // if numOfUniqueValues = 4 , i need the letters A B C D
-            for (int i = 0; i < numOfUniqueValues; i++)
+            for(int i = 0; i < numOfUniqueValues; i++)
             {
                 int temp = 65 + i;
                 boardValues[numOfUniqueValues] = '0' + temp;
@@ -146,7 +153,7 @@ namespace B20_Ex02
         {
             bool matchingCards = checkIfMatchingCards(i_Move);
 
-            if (!matchingCards)
+            if(!matchingCards)
             {
                 System.Threading.Thread.Sleep(2000);
                 m_Logic.UndoMove(i_Move);
@@ -172,14 +179,14 @@ namespace B20_Ex02
 
         private void printGameResult()
         {
-            Player winnerPlayer = m_Logic.GetWinner(); //להשתמש בשדה לוג'יק שאביטל יצרה
-            if (!m_QuitGame)
+            Player winnerPlayer = m_Logic.GetWinner();
+            if(!m_QuitGame)
             {
-                UI.printWinnerMessage(winnerPlayer);
+                m_Ui.PrintWinnerMessage(winnerPlayer.Name);
             }
             else
             {
-                UI.printGoodByeMessage();
+                m_Ui.PrintGoodByeMessage();
             }
         }
 
@@ -188,16 +195,17 @@ namespace B20_Ex02
             string player1Name, player2Name;
             Player.ePlayerType player2Type;
             player1Name = m_Ui.GetPlayerName("Player no. 1");
-            m_Logic.AddPlayer(player1Name, "Human", true);
+            m_Logic.AddPlayer(player1Name, Player.ePlayerType.Human, true);
             player2Type = m_Ui.GetOpponentType(player1Name);
-            if(player2Type == "Computer")
+            if(player2Type.ToString() == "Computer")
             {
                 player2Name = "Computer";
             }
             else
             {
-                player2Name = m_Ui.GetPlayerName("Player no. 1");
+                player2Name = m_Ui.GetPlayerName("Player no. 2");
             }
+
             m_Logic.AddPlayer(player2Name, player2Type, false);
         }
 
@@ -225,11 +233,12 @@ namespace B20_Ex02
             m_Ui.PrintBoard(logicBoard);
         }
 
-        private void makeValidMove(string i_PlayerMoveStr, ref Move currentMove)
+        private void makeValidMove(string i_PlayerMoveStr, ref Move i_CurrentMove)
         {
             Location cellLocation = m_Logic.GetCellLocation(i_PlayerMoveStr);
             m_Logic.RevealCard(cellLocation);
-            currentMove.SetLocation(cellLocation);
+            i_CurrentMove.SetLocation(cellLocation);
             clearAndPrintBoard();
         }
+    }
 }

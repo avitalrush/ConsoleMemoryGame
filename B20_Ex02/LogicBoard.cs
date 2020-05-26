@@ -24,6 +24,7 @@ namespace B20_Ex02
                     tempCells[i, j] = new BoardCell();
                 }
             }
+
             m_Cells = tempCells;
         }
 

@@ -78,7 +78,7 @@ namespace B20_Ex02
             return m_Winner;
         }
 
-        public void GivePointTo()
+        public void GivePointToCurrentPlayer()
         {
             m_CurrentPlayer.Points++;
         }

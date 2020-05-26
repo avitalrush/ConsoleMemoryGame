@@ -19,7 +19,7 @@ namespace B20_Ex02
         public void SetBoard(int i_Width, int i_Height)
         {
             m_Board = new UIBoard(i_Width, i_Height);
-            shuffelValuesIntoBoard(ref m_Board);
+            shuffleValuesIntoBoard(ref m_Board);
         }
 
         // // 'get input from user' METHODS:
@@ -98,6 +98,40 @@ namespace B20_Ex02
             return (Player.ePlayerType)Convert.ToInt32(typeChosen);
         }
 
+        public string GetValidMoveFromUser(List<string> i_ValidMoves)
+        {
+            string userMoveStr;
+            bool validChoose = false;
+            string msg = string.Format("Please choose a card: ");
+            string errorMsg = string.Format("Invalid choose. Please choose a card: ");
+
+            Console.WriteLine(msg);
+            userMoveStr = Console.ReadLine();
+            do
+            {
+                if (CheckValidityOfMove(userMoveStr, i_ValidMoves))
+                {
+                    validChoose = true;
+                }
+                else
+                {
+                    Console.WriteLine(errorMsg);
+                    userMoveStr = Console.ReadLine();
+                }
+            }
+            while (!validChoose);
+
+            return userMoveStr;
+        }
+
+        private bool CheckValidityOfMove(string i_UserMoveStr, List<string> i_ValidMoves)
+        {
+            bool validMove;
+            validMove = i_ValidMoves.Exists(x => x == i_UserMoveStr);
+
+            return validMove;
+        }
+
         public char GetCardValue(Location i_LocationOnBoard)
         {
             return m_Board.GetCardValue(i_LocationOnBoard);
@@ -150,9 +184,10 @@ namespace B20_Ex02
         }
          */
 
-        public char AskUserForAnotherRound()
+        public bool AskUserForAnotherRound()
         {
             char userDesicion;
+            bool playAgain;
             Console.WriteLine("Do you want to play another round? Y for Yes, N for No : ");
             userDesicion = char.Parse(Console.ReadLine());
             do
@@ -165,7 +200,17 @@ namespace B20_Ex02
             }
             while(!(userDesicion == 'Y' || userDesicion == 'N'));
 
-            return userDesicion;
+            if(userDesicion == 'Y')
+            {
+                playAgain = true;
+            }
+
+            else
+            {
+                playAgain = false;
+            }
+
+            return playAgain;
         }
 
         public string GetValidMoveFromUser()
@@ -256,6 +301,16 @@ namespace B20_Ex02
         private void assembleFullBoard(ref StringBuilder i_FullBoard, ref StringBuilder i_RowToBeAppended)
         {
             i_FullBoard.AppendLine(i_RowToBeAppended.ToString());
+        }
+
+        public void PrintWinnerMessage(string i_WinnerPlayer)
+        {
+
+        }
+
+        public void PrintGoodByeMessage()
+        {
+
         }
     }
 }

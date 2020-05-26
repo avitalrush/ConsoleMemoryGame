@@ -13,11 +13,9 @@ namespace B20_Ex02
         // CTOR:
         public Logic()
         {
-            
         }
 
         // METHODS:
-
         public LogicBoard Board
         {
             get
@@ -57,6 +55,7 @@ namespace B20_Ex02
                     }
                 }
             }
+
             validMoves.Add("Q");
 
             return validMoves;
@@ -80,8 +79,8 @@ namespace B20_Ex02
 
         public void UndoMove(Move i_Move)
         {
-            Location locationOfFirstCard = i_Move.getLocationOfFirstCard();
-            Location locationOfSecondCard = i_Move.getLocationOfSecondCard();
+            Location locationOfFirstCard = i_Move.GetLocationOfFirstCard();
+            Location locationOfSecondCard = i_Move.GetLocationOfSecondCard();
 
             m_Board.HideCard(locationOfFirstCard);
             m_Board.HideCard(locationOfSecondCard);
@@ -89,12 +88,13 @@ namespace B20_Ex02
 
         public void SwitchPlayers()
         {
-            m_AllPlayers.switchPlayers();
+            m_AllPlayers.SwitchPlayers();
         }
 
         public void GivePointToCurrentPlayer()
         {
-            m_AllPlayers.givePointToCurrentPlayer();
+            m_AllPlayers.GivePointToCurrentPlayer();
+        }
 
         public Player GetWinner()
         {
@@ -104,11 +104,6 @@ namespace B20_Ex02
         public void AddPlayer(string i_Name, Player.ePlayerType i_PlayerType, bool i_IsItMyTurn)
         {
             m_AllPlayers.CreatePlayer(i_Name, i_PlayerType, i_IsItMyTurn);
-        }
-
-        public void GivePoint()
-        {
-            m_AllPlayers.GivePointTo();
         }
 
         public void RevealCard(Location i_CellLocation)

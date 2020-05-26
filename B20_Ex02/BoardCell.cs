@@ -18,13 +18,13 @@ namespace B20_Ex02
         }
 
         // METHODS:
-
         public bool isHidden
         {
             get
             {
                 return m_isHidden;
             }
+
             set
             {
                 m_isHidden = value;

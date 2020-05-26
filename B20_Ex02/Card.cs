@@ -14,11 +14,11 @@ namespace B20_Ex02
             {
                 return value;
             }
+
             set
             {
-
+                this.value = value;
             }
         }
-
     }
 }
