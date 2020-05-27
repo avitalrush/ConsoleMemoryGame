@@ -85,8 +85,10 @@ namespace B20_Ex02
 
         public void SwitchTurnToMainPlayer()
         {
-            m_Player1.IsMyTurn = true;
-            m_Player2.IsMyTurn = false;
+            if(m_Player2.IsMyTurn)
+            {
+                SwitchPlayers();
+            }
         }
 
         public string[] GetPlayersNames()

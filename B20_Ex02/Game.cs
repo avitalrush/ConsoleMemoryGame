@@ -38,7 +38,7 @@ namespace B20_Ex02
             List<string> validCardsToChoose;
 
             initializeBoards();
-            printBoard();                                                            // Game asks Logic for his LogicBoard and sends it to UI for printing
+            clearAndPrintBoard();                                                            // Game asks Logic for his LogicBoard and sends it to UI for printing
 
             while(validMovesLeft && !m_QuitGame)
             {
@@ -47,7 +47,7 @@ namespace B20_Ex02
 
                 for(int i = 0; i < 2 && !m_QuitGame; i++)                           // This is a move for one player & it has 2 parts (2 cards) --> THINK OF A CONST NAME TO REPLACE 2
                 {
-                    validCardsToChoose = m_Logic.GetValidMovesList();               // Creates validMovesList from logicBoard + concatenates "Q" string
+                    validCardsToChoose = m_Logic.GetValidCardsList();               // Creates validMovesList from logicBoard + concatenates "Q" string
 
                     if (currentPlayer.PlayerType == Player.ePlayerType.Human)
                     {
@@ -97,7 +97,7 @@ namespace B20_Ex02
             {
                 width = m_Ui.GetBoardWidth();
                 height = m_Ui.GetBoardHeight();
-                validBoardSize = validateBoardSize(width, height);
+                validBoardSize = validateBoardSize(height, width);
 
                 if(!validBoardSize)
                 {
@@ -110,9 +110,9 @@ namespace B20_Ex02
             initializeUiBoard(height, width);
         }
 
-        private bool validateBoardSize(int i_width, int i_height)
+        private bool validateBoardSize(int i_Height, int i_Width)
         {
-            int numOfCells = i_width * i_height;
+            int numOfCells = i_Width * i_Height;
             return numOfCells % 2 == 0;
         }
 
@@ -146,7 +146,7 @@ namespace B20_Ex02
                 bool validMovesLeft = m_Logic.CheckIfValidMovesLeft();
                 if(validMovesLeft)
                 {
-                    Console.WriteLine("It's a Match! {0}, yot get another turn", i_Move.GetPlayer().Name);
+                    Console.WriteLine("It's a Match! {0}, you get another turn", i_Move.GetPlayer().Name);
                 }
             }
         }
@@ -166,7 +166,14 @@ namespace B20_Ex02
         {
             // if there's a winner in the game -
             Player winner = m_Logic.GetWinner();
-            m_Ui.PrintWinnerMsg(winner.Name);
+            if(winner == null)
+            {
+                m_Ui.PrintTieMsg();
+            }
+            else
+            {
+                m_Ui.PrintWinnerMsg(winner.Name);
+            }
 
             // also, print points state -
             string[] playersNames = m_Logic.GetPlayersNames();
@@ -234,10 +241,10 @@ namespace B20_Ex02
             clearAndPrintBoard();
         }
 
-        private string convertLettersToDigits(string i_strLocation)
+        private string convertLettersToDigits(string i_StrLocation)
         {
-            char xCord = i_strLocation[0];
-            char yCord = i_strLocation[1];
+            char xCord = i_StrLocation[0];
+            char yCord = i_StrLocation[1];
             int xCordNum = (int)(xCord - 'A')+1;        // convert 'A' to 1
 
             //Console.Write("Converted Value: {0}{1}", xCordNum, yCord);
