@@ -11,12 +11,12 @@ namespace B20_Ex02
         private BoardCell[,] m_Cells;
 
         // CTOR:
-        public LogicBoard(int i_height, int i_width)
+        public LogicBoard(int i_Height, int i_Width)
         {
-            this.r_height = i_height;
-            this.r_width = i_width;
+            this.r_height = i_Height;
+            this.r_width = i_Width;
 
-            BoardCell[,] tempCells = new BoardCell[i_height, i_width];
+            BoardCell[,] tempCells = new BoardCell[i_Height, i_Width];
             for (int i = 0; i < r_height; i++)
             {
                 for (int j = 0; j < r_width; j++)
