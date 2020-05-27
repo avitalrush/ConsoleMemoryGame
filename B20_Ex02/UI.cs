@@ -69,25 +69,27 @@ namespace B20_Ex02
         public int GetOpponentType(string i_PlayerOneName)
         {
             int typeChosen;
+            string input;
             bool validType = false;
             string msg = string.Format("{0}, please choose your opponent. for Human press 0, for Computer press 1: ", i_PlayerOneName);
             string errorMsg = string.Format("Invalid key. for Human press 0, for Computer press 1: ");
 
             Console.WriteLine(msg);
-            typeChosen = int.Parse(Console.ReadLine());
+            input = Console.ReadLine();
             do
             {
-                if(typeChosen == 0 || typeChosen == 1)
+                if (input == "0" || input == "1")
                 {
                     validType = true;
                 }
                 else
                 {
                     Console.WriteLine(errorMsg);
-                    typeChosen = int.Parse(Console.ReadLine());
+                    input = Console.ReadLine();
                 }
             }
             while (!validType);
+            typeChosen = int.Parse(input);
 
             return typeChosen;
         }
@@ -140,16 +142,19 @@ namespace B20_Ex02
         private bool CheckValidityOfInput(string i_UserChoiceStr)
         {
             bool validInput;
-
-            if (i_UserChoiceStr.Equals("Q"))
+            if (i_UserChoiceStr.Length == 2)
+            {
+                char column = i_UserChoiceStr[0];
+                char row = i_UserChoiceStr[1];
+                validInput = char.IsUpper(column) && char.IsDigit(row);
+            }
+            else if (i_UserChoiceStr.Equals("Q"))
             {
                 validInput = true;
             }
             else
             {
-                char column = i_UserChoiceStr[0];
-                char row = i_UserChoiceStr[1];
-                validInput = char.IsUpper(column) && char.IsDigit(row);
+                validInput = false;
             }
 
             return validInput;
@@ -189,15 +194,6 @@ namespace B20_Ex02
             return playAgain;
         }
 
-        public string GetValidMoveFromUser()
-        {
-            string userMoveStr;
-            Console.WriteLine("Choose a card : ");
-            userMoveStr = Console.ReadLine();
-
-            return userMoveStr;
-        }
-
         public void PrintBoard(BoardCell[,] i_LogicBoardCells)
         {
             StringBuilder frameRow = new StringBuilder();
@@ -217,7 +213,7 @@ namespace B20_Ex02
             char column = 'A';
             int i;
 
-            i_FrameRow.Append("   ");
+            i_FrameRow.Append("    ");
             for (i = 1; i <= i_Width; i++)
             {
                 i_FrameRow.Append(column++);
@@ -283,6 +279,11 @@ namespace B20_Ex02
         public void PrintWinnerMsg(string i_WinnerPlayer)
         {
             Console.WriteLine("{0} is the winner!", i_WinnerPlayer);
+        }
+
+        public void PrintTieMsg()
+        {
+            Console.WriteLine("It's a tie!");
         }
 
         public void PrintGoodbyeMsg()

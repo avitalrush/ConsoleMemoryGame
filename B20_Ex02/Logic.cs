@@ -35,7 +35,7 @@ namespace B20_Ex02
             return m_AllPlayers.GetCurrentPlayer;
         }
 
-        public List<string> GetValidMovesList()
+        public List<string> GetValidCardsList()
         {
             // method creates and returns validMovesList + concatenates "Q" string
 
@@ -77,7 +77,7 @@ namespace B20_Ex02
         public bool CheckIfValidMovesLeft()
         {
             // if there's only one item in validMovesList --> it can be only 'Q' --> the game ends
-            return GetValidMovesList().Count > 1;
+            return GetValidCardsList().Count > 1;
         }
 
         public void UndoMove(Move i_Move)
