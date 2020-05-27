@@ -15,10 +15,7 @@ namespace B20_Ex02
 
         public char CardValue
         {
-            get
-            {
-                return r_Value;
-            }
+            get { return r_Value; }
         }
     }
 }

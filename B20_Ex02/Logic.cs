@@ -6,17 +6,14 @@ namespace B20_Ex02
 {
     public class Logic
     {
-        // MEMBERS:
         private LogicBoard m_Board;
         private PlayersManager m_AllPlayers;
 
-        // CTOR:
         public Logic()
         {
             m_AllPlayers = new PlayersManager();
         }
 
-        // METHODS:
         public LogicBoard Board
         {
             get
@@ -37,46 +34,40 @@ namespace B20_Ex02
 
         public List<string> GetValidCardsList()
         {
-            // method creates and returns validMovesList + concatenates "Q" string
-
-            List<string> validMoves = new List<string>();
-            BoardCell[,] tempCells = m_Board.Cells;
-            int width = m_Board.Width;
+            List<string> validCards = new List<string>();
+            BoardCell[,] boardCells = m_Board.Cells;
             int height = m_Board.Height;
-            string strIndex;
+            int width = m_Board.Width;
+            string cellLocationStr;
 
             for (int i = 0; i < height; i++)
             {
                 for (int j = 0; j < width; j++)
                 {
-                    if(tempCells[i, j].isHidden)
+                    if(boardCells[i, j].isHidden)
                     {
-                        strIndex = CreateStringIndex(i, j);
-                        validMoves.Add(strIndex);
+                        cellLocationStr = CreateStrLocation(i, j);
+                        validCards.Add(cellLocationStr);
                     }
                 }
             }
 
-            validMoves.Add("Q");
+            validCards.Add("Q");
 
-            return validMoves;
+            return validCards;
         }
 
-        public string CreateStringIndex(int i_Row, int i_Column)
+        public string CreateStrLocation(int i_Row, int i_Column)
         {
-            // method gets i=5, j=4 --> returns "E4"
-
             int intRow = i_Row + 1;
             int intColumn = 'A' + i_Column;
             char charColumn = Convert.ToChar(intColumn);
 
-            //Console.WriteLine("strIndex: {0}", String.Format("{0}{1}", charColumn, strRow));
-            return String.Format("{0}{1}", charColumn, intRow);
+            return string.Format("{0}{1}", charColumn, intRow);
         }
 
         public bool CheckIfValidMovesLeft()
         {
-            // if there's only one item in validMovesList --> it can be only 'Q' --> the game ends
             return GetValidCardsList().Count > 1;
         }
 
@@ -101,12 +92,12 @@ namespace B20_Ex02
 
         public Player GetWinner()
         {
-            return m_AllPlayers.WhoWonTheGame();
+            return m_AllPlayers.GetWinner();
         }
 
-        public void AddPlayer(string i_Name, Player.ePlayerType i_PlayerType, bool i_IsItMyTurn)
+        public void AddPlayer(string i_Name, Player.ePlayerType i_PlayerType, bool i_IsPlayersTurn)
         {
-            m_AllPlayers.CreatePlayer(i_Name, i_PlayerType, i_IsItMyTurn);
+            m_AllPlayers.CreatePlayer(i_Name, i_PlayerType, i_IsPlayersTurn);
         }
 
         public void RevealCard(Location i_CellLocation)
@@ -114,9 +105,10 @@ namespace B20_Ex02
             m_Board.RevealCard(i_CellLocation);
         }
 
-        public Location GetCellLocation(string i_StrLocation)
+        public Location GetLocationFromStr(string i_LocationStr)
         {
-            Location cellLocation = new Location(i_StrLocation[0]-'0' - 1, i_StrLocation[1]-'0' - 1);
+            Location cellLocation = new Location(i_LocationStr[0]- '0' - 1, i_LocationStr[1]- '0' - 1);
+
             return cellLocation;
         }
 
