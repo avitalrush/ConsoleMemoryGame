@@ -11,15 +11,15 @@ namespace B20_Ex02
         private BoardCell[,] m_Cells;
 
         // CTOR:
-        public LogicBoard(int i_width, int i_height)
+        public LogicBoard(int i_height, int i_width)
         {
-            this.r_width = i_width;
             this.r_height = i_height;
+            this.r_width = i_width;
 
-            BoardCell[,] tempCells = new BoardCell[i_width, i_height];
-            for (int i = 0; i < r_width; i++)
+            BoardCell[,] tempCells = new BoardCell[i_height, i_width];
+            for (int i = 0; i < r_height; i++)
             {
-                for (int j = 0; j < r_height; j++)
+                for (int j = 0; j < r_width; j++)
                 {
                     tempCells[i, j] = new BoardCell();
                 }
@@ -56,12 +56,14 @@ namespace B20_Ex02
 
         public void HideCard(Location i_CardLocationOnBoard)
         {
-            m_Cells[i_CardLocationOnBoard.Column, i_CardLocationOnBoard.Row].isHidden = true;
+            //m_Cells[i_CardLocationOnBoard.Column, i_CardLocationOnBoard.Row].isHidden = true;
+            m_Cells[i_CardLocationOnBoard.Row, i_CardLocationOnBoard.Column].isHidden = true;
         }
 
         public void RevealCard(Location i_CardLocationOnBoard)
         {
-            m_Cells[i_CardLocationOnBoard.Column, i_CardLocationOnBoard.Row].isHidden = false;
+            //Console.WriteLine("Column: {0}, Row: {1}", i_CardLocationOnBoard.Column, i_CardLocationOnBoard.Row);
+            m_Cells[i_CardLocationOnBoard.Row, i_CardLocationOnBoard.Column].isHidden = false;
         }
     }
 }

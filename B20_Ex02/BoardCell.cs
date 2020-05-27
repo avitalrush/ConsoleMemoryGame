@@ -14,7 +14,7 @@ namespace B20_Ex02
         public BoardCell()
         {
             m_cellLocation = new Location();
-            m_isHidden = false;
+            m_isHidden = true;
         }
 
         // METHODS:

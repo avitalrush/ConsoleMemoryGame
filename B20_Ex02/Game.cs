@@ -7,14 +7,14 @@ namespace B20_Ex02
     public class Game
     {
         // MEMBERS:
-        //private const int k_NumOfPlayers = 2;
+        //private const int k_NumOfPlayers = 2;     // Think how to name this const, instead of using the number 2 in the for loop, we should use some const. also - should it be a const member or can it be a const variable inside 'run' method?
         private bool m_AnotherRound = true;
         private bool m_QuitGame = false;
-        private Logic m_Logic;
-        private UI m_Ui;
+        private Logic m_Logic;                      // Suggestion: make member read_only
+        private UI m_Ui;                            // Suggestion: make member read_only
 
         // CTOR:
-        public Game()
+        public Game()                               // Should we initialize here also the members m_AnotherRound and m_QuitGame ?
         {
             m_Logic = new Logic();
             m_Ui = new UI();
@@ -33,61 +33,58 @@ namespace B20_Ex02
         private void run()
         {
             Player currentPlayer;
-            Player winner;
             Move currentMove;
-            Card currentCard;
-            //LogicBoard logicBoard;
-            //UIBoard uiBoard;
             bool validMovesLeft = true;
-            List<string> validMoves;
-            string moveStr;
-
-            /////////////////////////////////////////////////////////////
+            List<string> validCardsToChoose;
 
             initializeBoards();
-            printBoard(); // Game's method, who is a mediator --> asks Logic for his LogicBoard and sends it to UI for printing
+            printBoard();                                                            // Game asks Logic for his LogicBoard and sends it to UI for printing
 
             while(validMovesLeft && !m_QuitGame)
             {
                 currentPlayer = m_Logic.GetCurrentPlayer();
                 currentMove = initMove(currentPlayer);
 
-                for(int i = 0; i < 2 && !m_QuitGame; i++) // this is a move for one player, it has 2 parts (2 cards)
+                for(int i = 0; i < 2 && !m_QuitGame; i++)                           // This is a move for one player & it has 2 parts (2 cards) --> THINK OF A CONST NAME TO REPLACE 2
                 {
-                    validMoves =
-                        m_Logic
-                            .GetValidMovesList(); // gets validMovesList, creates it from logicBoard + concatenates "Q" string
+                    validCardsToChoose = m_Logic.GetValidMovesList();               // Creates validMovesList from logicBoard + concatenates "Q" string
 
-                    //////// here we need cases in case currentPlayer.type == human --> continue like this, 
-
-                    moveStr = m_Ui.GetValidMoveFromUser(
-                        validMoves); // get move from user and checks validMoves for validity
-
-                    if(moveStr.Equals("Q")) // if user input is Q --> quit
+                    if (currentPlayer.PlayerType == Player.ePlayerType.Human)
                     {
-                        m_QuitGame = true;
+                        makePlayerCardChoice(validCardsToChoose, currentPlayer.Name, ref currentMove);
                     }
-                    else // else - user input is surly VALID and we can continue
+
+                    else
                     {
-                        makeValidMove(
-                            moveStr,
-                            ref currentMove); //change the name of the method because it's confusing, here it's only half of the move
-                                              /////////////////////////////////////////////////////////////////////////////////////////
-                                              // Shaked's Answer: I fixed this method so it Is making a valid move and not half a move.
-                                              // Please check me about this 
+                        makeComputersCardChoice(validCardsToChoose, ref currentMove);
                     }
                 }
 
-                if(!m_QuitGame)
+                if (!m_QuitGame)
                 {
                     calculateMoveResult(currentMove);
                     validMovesLeft = m_Logic.CheckIfValidMovesLeft();
+                    //Console.WriteLine("Valid moves left? {0}",validMovesLeft);
                 }
             }
 
-            printGameResult();
-
-            m_AnotherRound = m_Ui.AskUserForAnotherRound();
+            if(!m_QuitGame)      // if the user didn't quit the game but the game ended normally
+            {
+                printGameResult();
+                m_AnotherRound = m_Ui.AskUserForAnotherRound();
+                if(!m_AnotherRound) // if the player doesn't want another round
+                {
+                    m_Ui.PrintGoodbyeMsg();
+                }
+                else
+                {
+                    m_Logic.SwitchTurnToMainPlayer(); 
+                }
+            }
+            else // the game ended because the player quited
+            {
+                m_Ui.PrintGoodbyeMsg();
+            }
         }
 
         private void initializeBoards()
@@ -109,8 +106,8 @@ namespace B20_Ex02
             }
             while(!validBoardSize);
 
-            InitializeLogicBoard(width, height);
-            InitializeUIBoard(width, height);
+            initializeLogicBoard(height, width);
+            initializeUiBoard(height, width);
         }
 
         private bool validateBoardSize(int i_width, int i_height)
@@ -119,34 +116,16 @@ namespace B20_Ex02
             return numOfCells % 2 == 0;
         }
 
-        private void InitializeLogicBoard(int i_Width, int i_Height)
+        private void initializeLogicBoard(int i_Height, int i_Width)
         {
-            LogicBoard board = new LogicBoard(i_Width, i_Height);
-            m_Logic.SetBoard(board);
-            //m_Logic.SetBoard(i_Width, i_Height);
+            m_Logic.SetBoard(i_Height, i_Width);
         }
 
-        private void InitializeUIBoard(int i_Width, int i_Height)
+        private void initializeUiBoard(int i_Height, int i_Width)
         {
-            UIBoard board = new UIBoard(i_Width, i_Height);
-            //m_Ui.SetBoard(i_Width, i_Height);
-            shuffleValuesIntoBoard(ref board);
+            UIBoard board = new UIBoard(i_Height, i_Width);
+            board.ShuffleCards();
             m_Ui.SetBoard(board);
-        }
-
-        private void shuffleValuesIntoBoard(ref UIBoard io_Board)
-        {
-            int width = io_Board.Width;
-            int height = io_Board.Height;
-            int numOfUniqueValues = (width * height) / 2;
-            char[] boardValues = new char[numOfUniqueValues];
-
-            // if numOfUniqueValues = 4 , i need the letters A B C D
-            for(int i = 0; i < numOfUniqueValues; i++)
-            {
-                int temp = 65 + i;
-                boardValues[numOfUniqueValues] = '0' + temp;
-            }
         }
 
         private void calculateMoveResult(Move i_Move)
@@ -155,6 +134,7 @@ namespace B20_Ex02
 
             if(!matchingCards)
             {
+                Console.WriteLine("Cards are not Matching :(");
                 System.Threading.Thread.Sleep(2000);
                 m_Logic.UndoMove(i_Move);
                 m_Logic.SwitchPlayers();
@@ -163,6 +143,11 @@ namespace B20_Ex02
             else
             {
                 m_Logic.GivePointToCurrentPlayer();
+                bool validMovesLeft = m_Logic.CheckIfValidMovesLeft();
+                if(validMovesLeft)
+                {
+                    Console.WriteLine("It's a Match! {0}, yot get another turn", i_Move.GetPlayer().Name);
+                }
             }
         }
 
@@ -179,15 +164,14 @@ namespace B20_Ex02
 
         private void printGameResult()
         {
-            Player winnerPlayer = m_Logic.GetWinner();
-            if(!m_QuitGame)
-            {
-                m_Ui.PrintWinnerMessage(winnerPlayer.Name);
-            }
-            else
-            {
-                m_Ui.PrintGoodByeMessage();
-            }
+            // if there's a winner in the game -
+            Player winner = m_Logic.GetWinner();
+            m_Ui.PrintWinnerMsg(winner.Name);
+
+            // also, print points state -
+            string[] playersNames = m_Logic.GetPlayersNames();
+            int[] playersPoints = m_Logic.GetPlayersPoints();
+            m_Ui.PrintPoints(playersNames, playersPoints);
         }
 
         private void initializePlayers()
@@ -195,11 +179,13 @@ namespace B20_Ex02
             string player1Name, player2Name;
             int player2TypeInt;
             Player.ePlayerType player2Type;
+
             player1Name = m_Ui.GetPlayerName("Player no. 1");
             m_Logic.AddPlayer(player1Name, Player.ePlayerType.Human, true);
             player2TypeInt = m_Ui.GetOpponentType(player1Name);
             player2Type = (Player.ePlayerType)player2TypeInt;
-            if (player2TypeInt == 0)
+
+            if (player2TypeInt == 1)
             {
                 player2Name = "Computer";
             }
@@ -235,12 +221,66 @@ namespace B20_Ex02
             m_Ui.PrintBoard(logicBoard);
         }
 
-        private void makeValidMove(string i_PlayerMoveStr, ref Move i_CurrentMove)
+        private void makeValidCardReveal(string i_PlayerMoveStr, ref Move i_CurrentMove)
         {
-            Location cellLocation = m_Logic.GetCellLocation(i_PlayerMoveStr);
+            // method recieved i_PlayerMoveStr = A3
+            // in order to use it as board location we need to convert it to 13 (Column 1, Row 3)
+
+            string digitsLocation = convertLettersToDigits(i_PlayerMoveStr);
+            Location cellLocation = m_Logic.GetCellLocation(digitsLocation);
+
             m_Logic.RevealCard(cellLocation);
             i_CurrentMove.SetLocation(cellLocation);
             clearAndPrintBoard();
+        }
+
+        private string convertLettersToDigits(string i_strLocation)
+        {
+            char xCord = i_strLocation[0];
+            char yCord = i_strLocation[1];
+            int xCordNum = (int)(xCord - 'A')+1;        // convert 'A' to 1
+
+            //Console.Write("Converted Value: {0}{1}", xCordNum, yCord);
+            return String.Format("{0}{1}", xCordNum,yCord);
+        }
+
+        private string getValidCardChoiceFromComputer(List<string> i_ValidMoves)
+        {
+            // can the computer choose Q ? probably not. so inside GetValidMoveFromComputer(validMoves) we need to remove the Q frm the valid list move
+            // need to add AI for the computer
+
+            List<string> computerValidMoves = i_ValidMoves;
+            computerValidMoves.Remove("Q");
+
+            Random numberGenerator = new Random();
+            int chosenRandomIndex = numberGenerator.Next(computerValidMoves.Count - 1);
+
+            return computerValidMoves[chosenRandomIndex];
+        }
+
+        private void makePlayerCardChoice(List<string> i_ValidCards, string i_PlayerName, ref Move i_CurrentMove)
+        {
+            string currentCardChoiceStr = m_Ui.GetValidCardChoiceFromPlayer(i_ValidCards, i_PlayerName);        // Get move from user and checks validMoves for validity, should we change the variable name to userMoveStr ?
+
+            if(currentCardChoiceStr.Equals("Q"))                        // If user input is Q --> want to quit the game
+            {
+                m_QuitGame = true;
+            }
+            else                                                        // Else - the user's input is surly VALID (UI checked it) and we can continue
+            {
+                makeValidCardReveal(currentCardChoiceStr, ref i_CurrentMove);            // Change the name of the method, here it's only HALF of the move. maybe chooseValidCard ?
+            }
+
+        }
+
+        private void makeComputersCardChoice(List<string> i_ValidCards, ref Move i_CurrentMove)
+        {
+            string currentCardChoiceStr = getValidCardChoiceFromComputer(i_ValidCards);
+
+            Console.WriteLine("Computer is making it's move...");
+            System.Threading.Thread.Sleep(2000);
+
+            makeValidCardReveal(currentCardChoiceStr, ref i_CurrentMove);
         }
     }
 }

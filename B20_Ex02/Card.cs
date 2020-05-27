@@ -6,18 +6,18 @@ namespace B20_Ex02
 {
     public class Card
     {
-        private char value;
+        private readonly char r_Value;
+
+        public Card(char i_Value)
+        {
+            r_Value = i_Value;
+        }
 
         public char CardValue
         {
             get
             {
-                return value;
-            }
-
-            set
-            {
-                this.value = value;
+                return r_Value;
             }
         }
     }

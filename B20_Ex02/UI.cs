@@ -10,16 +10,11 @@ namespace B20_Ex02
         // MEMBERS:
         private UIBoard m_Board;
 
-        // CTOR:
-        public UI()
-        {
-        }
-
         // METHODS:
-        public void SetBoard(int i_Width, int i_Height)
+        public void SetBoard(UIBoard i_Board)
         {
-            m_Board = new UIBoard(i_Width, i_Height);
-            shuffleValuesIntoBoard(ref m_Board);
+            m_Board = i_Board;
+            //shuffleValuesIntoBoard(ref m_Board);
         }
 
         // // 'get input from user' METHODS:
@@ -36,22 +31,21 @@ namespace B20_Ex02
 
         public int GetDimension(string i_Dimension)
         {
-            string msg = string.Format("Please enter the board's {0} (between 4-6):", i_Dimension);
+            string enterInputmsg = string.Format("Please enter the board's {0} (between 4-6):", i_Dimension);
             string invalidMsg = string.Format("Invalid {0}. Please enter the board's {0} (between 4-6):", i_Dimension);
             bool inputIsValid = true;
             string dimensionStr;
             int dimensionNum;
 
+            Console.WriteLine(enterInputmsg);
             do
             {
-                Console.WriteLine(msg);
                 dimensionStr = Console.ReadLine();
                 inputIsValid = ValidateDimension(dimensionStr);
 
                 if (!inputIsValid)
                 {
                     Console.WriteLine(invalidMsg);
-                    string input = Console.ReadLine();
                 }
             }
             while(!inputIsValid);
@@ -98,91 +92,73 @@ namespace B20_Ex02
             return typeChosen;
         }
 
-        public string GetValidMoveFromUser(List<string> i_ValidMoves)
+        public string GetValidCardChoiceFromPlayer(List<string> i_ValidCardsToChoose, string i_PlayersName)
         {
-            string userMoveStr;
-            bool validChoose = false;
-            string msg = string.Format("Please choose a card: ");
-            string errorMsg = string.Format("Invalid choose. Please choose a card: ");
+            string userCardChoiceStr;
+            bool validCardChoice = false;
+            bool validInput = false;
+            string chooseCardMsg = string.Format("{0}, please choose a card: ", i_PlayersName);
+            string invalidCardMsg = string.Format("Invalid card choice (card is already shown or location does not exist on board). Please choose another card: ");
+            string invalidInputMsg = string.Format("Invalid input (input should contain an Uppercase letter and a digit only). Please choose another card:");
 
-            Console.WriteLine(msg);
-            userMoveStr = Console.ReadLine();
+            Console.WriteLine(chooseCardMsg);
+            userCardChoiceStr = Console.ReadLine();
+
             do
             {
-                if (CheckValidityOfMove(userMoveStr, i_ValidMoves))
+                validInput = CheckValidityOfInput(userCardChoiceStr);
+                if(!validInput)
                 {
-                    validChoose = true;
+                    Console.WriteLine(invalidInputMsg);
+                    userCardChoiceStr = Console.ReadLine();
                 }
+
                 else
                 {
-                    Console.WriteLine(errorMsg);
-                    userMoveStr = Console.ReadLine();
+                    validCardChoice = CheckValidityOfCardChoice(userCardChoiceStr, i_ValidCardsToChoose);
+                    if (!validCardChoice)
+                    {
+                        Console.WriteLine(invalidCardMsg);
+                        userCardChoiceStr = Console.ReadLine();
+                    }
                 }
             }
-            while (!validChoose);
+            while (!validInput || !validCardChoice);
 
-            return userMoveStr;
+            return userCardChoiceStr;
         }
 
-        private bool CheckValidityOfMove(string i_UserMoveStr, List<string> i_ValidMoves)
+        private bool CheckValidityOfCardChoice(string i_UserChoiceStr, List<string> i_ValidCardsToChoose)
         {
-            bool validMove;
-            validMove = i_ValidMoves.Exists(x => x == i_UserMoveStr);
+            //bool validMove;
+            //validMove = i_ValidMoves.Exists(x => x == i_UserMoveStr);
+            //return validMove;
 
-            return validMove;
+            return i_ValidCardsToChoose.Contains(i_UserChoiceStr);
+        }
+
+        private bool CheckValidityOfInput(string i_UserChoiceStr)
+        {
+            bool validInput;
+
+            if (i_UserChoiceStr.Equals("Q"))
+            {
+                validInput = true;
+            }
+            else
+            {
+                char column = i_UserChoiceStr[0];
+                char row = i_UserChoiceStr[1];
+                validInput = char.IsUpper(column) && char.IsDigit(row);
+            }
+
+            return validInput;
         }
 
         public char GetCardValue(Location i_LocationOnBoard)
         {
             return m_Board.GetCardValue(i_LocationOnBoard);
         }
-
-        /*
-         int getNumOfRows()
-        {
-            string inputStr;
-            int numOfRows;
-            bool inputIsValid;
-
-            do
-            {
-                Console.WriteLine("Please enter the board's height (a number between 4 and 6): ");
-                inputStr = Console.ReadLine();
-
-                inputIsValid = validateNumOfRows(inputStr);
-                if (!inputIsValid)
-                {
-                    Console.WriteLine("Invalid input. Please enter a valid input: ");
-                }
-            }
-            while (!inputIsValid);
-
-            numOfRows = int.Parse(inputStr);
-            return numOfRows;
-        }
-
-        void getBoardDimensions(ref int[] arr)
-        {
-            string inputStr;
-            bool inputIsValid;
-
-            do
-            {
-                Console.WriteLine("Please enter the board's height (a number between 4 and 6): ");
-                inputStr = Console.ReadLine();
-
-                inputIsValid = validateNumOfRows(inputStr);
-                if (!inputIsValid)
-                {
-                    Console.WriteLine("Invalid input. Please enter a valid input: ");
-                }
-            }
-            while (!inputIsValid);
-            int numOfRows;
-            numOfRows = int.Parse(inputStr);
-            return numOfRows;
-        }
-         */
 
         public bool AskUserForAnotherRound()
         {
@@ -285,7 +261,8 @@ namespace B20_Ex02
                     }
                     else
                     {
-                        cardLocation = new Location(i - 1, j - 1);
+                        //cardLocation = new Location(i - 1, j - 1);
+                        cardLocation = new Location(j - 1, i - 1);
                         i_BoardRow.Append(m_Board.GetCardValue(cardLocation));
                     }
 
@@ -303,14 +280,20 @@ namespace B20_Ex02
             i_FullBoard.AppendLine(i_RowToBeAppended.ToString());
         }
 
-        public void PrintWinnerMessage(string i_WinnerPlayer)
+        public void PrintWinnerMsg(string i_WinnerPlayer)
         {
-
+            Console.WriteLine("{0} is the winner!", i_WinnerPlayer);
         }
 
-        public void PrintGoodByeMessage()
+        public void PrintGoodbyeMsg()
         {
+            Console.WriteLine("Thanks for playing!");
+        }
 
+        public void PrintPoints(string[] i_PlayersNames, int[] i_PlayersPoints)
+        {
+            Console.WriteLine("{0} got {1} points", i_PlayersNames[0], i_PlayersPoints[0]);
+            Console.WriteLine("{0} got {1} points", i_PlayersNames[1], i_PlayersPoints[1]);
         }
     }
 }
