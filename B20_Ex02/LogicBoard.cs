@@ -6,35 +6,30 @@ namespace B20_Ex02
 {
     public class LogicBoard
     {
-        // MEMBERS:
-        private readonly int r_width, r_height;
+        private readonly int r_Height, r_Width;
         private BoardCell[,] m_Cells;
 
-        // CTOR:
         public LogicBoard(int i_Height, int i_Width)
         {
-            this.r_height = i_Height;
-            this.r_width = i_Width;
+            this.r_Height = i_Height;
+            this.r_Width = i_Width;
 
-            BoardCell[,] tempCells = new BoardCell[i_Height, i_Width];
-            for (int i = 0; i < r_height; i++)
+            m_Cells = new BoardCell[i_Height, i_Width];
+
+            for (int rowIndex = 0; rowIndex < r_Height; rowIndex++)
             {
-                for (int j = 0; j < r_width; j++)
+                for (int columnIndex = 0; columnIndex < r_Width; columnIndex++)
                 {
-                    tempCells[i, j] = new BoardCell();
+                    m_Cells[rowIndex, columnIndex] = new BoardCell();
                 }
             }
-
-            m_Cells = tempCells;
         }
 
-        // METHODS:
-        // // get / set METHODS
         public int Width
         {
             get
             {
-                return r_width;
+                return r_Width;
             }
         }
 
@@ -42,7 +37,7 @@ namespace B20_Ex02
         {
             get
             {
-                return r_height;
+                return r_Height;
             }
         }
 
@@ -56,13 +51,11 @@ namespace B20_Ex02
 
         public void HideCard(Location i_CardLocationOnBoard)
         {
-            //m_Cells[i_CardLocationOnBoard.Column, i_CardLocationOnBoard.Row].isHidden = true;
             m_Cells[i_CardLocationOnBoard.Row, i_CardLocationOnBoard.Column].isHidden = true;
         }
 
         public void RevealCard(Location i_CardLocationOnBoard)
         {
-            //Console.WriteLine("Column: {0}, Row: {1}", i_CardLocationOnBoard.Column, i_CardLocationOnBoard.Row);
             m_Cells[i_CardLocationOnBoard.Row, i_CardLocationOnBoard.Column].isHidden = false;
         }
     }

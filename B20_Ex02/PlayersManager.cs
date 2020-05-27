@@ -10,18 +10,18 @@ namespace B20_Ex02
         public Player m_Player2;
         private Player m_CurrentPlayer;
         private Player m_Winner;
-        private bool m_EndedInTie = false;
+        private bool m_GameEndedInTie = false;
 
-        public void CreatePlayer(string i_Name, Player.ePlayerType i_PlayerType, bool i_IsItMyTurn)
+        public void CreatePlayer(string i_Name, Player.ePlayerType i_PlayerType, bool i_IsPlayersTurn)
         {
             if (m_Player1 == null)
             {
-                m_Player1 = new Player(i_Name, i_PlayerType, i_IsItMyTurn);
+                m_Player1 = new Player(i_Name, i_PlayerType, i_IsPlayersTurn);
                 m_CurrentPlayer = m_Player1;
             }
             else
             {
-                m_Player2 = new Player(i_Name, i_PlayerType, i_IsItMyTurn);
+                m_Player2 = new Player(i_Name, i_PlayerType, i_IsPlayersTurn);
             }
         }
 
@@ -52,14 +52,14 @@ namespace B20_Ex02
         {
             if (m_Player1.Points == m_Player2.Points)
             {
-                m_EndedInTie = true;
+                m_GameEndedInTie = true;
             }
         }
 
-        public Player WhoWonTheGame()
+        public Player GetWinner()
         {
             gameEndedInTie();
-            if (!m_EndedInTie)
+            if (!m_GameEndedInTie)
             {
                 if (m_Player1.Points > m_Player2.Points)
                 {

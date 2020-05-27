@@ -6,28 +6,23 @@ namespace B20_Ex02
 {
     public class BoardCell
     {
-        // MEMBERS:
-        private Location m_cellLocation;
-        private bool m_isHidden;
+        private bool m_IsHidden;
 
-        // CTOR:
         public BoardCell()
         {
-            m_cellLocation = new Location();
-            m_isHidden = true;
+            m_IsHidden = true;
         }
 
-        // METHODS:
         public bool isHidden
         {
             get
             {
-                return m_isHidden;
+                return m_IsHidden;
             }
 
             set
             {
-                m_isHidden = value;
+                m_IsHidden = value;
             }
         }
     }

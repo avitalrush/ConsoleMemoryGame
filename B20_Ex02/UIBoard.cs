@@ -5,27 +5,23 @@ using System.Text;
 
 namespace B20_Ex02
 {
-    public class UIBoard
+    public class UiBoard
     {
-        // MEMBERS:
-        private readonly int r_width, r_height;
+        private readonly int r_Width, r_Height;
         private Card[,] m_Cards;
 
-        // CTOR:
-        public UIBoard(int i_height, int i_width)
+        public UiBoard(int i_Height, int i_Width)
         {
-            this.r_height = i_height;
-            this.r_width = i_width;
-            m_Cards = new Card[i_height, i_width];
+            this.r_Height = i_Height;
+            this.r_Width = i_Width;
+            m_Cards = new Card[i_Height, i_Width];
         }
 
-        // METHODS:
-        // // get / set METHODS
         public int Width
         {
             get
             {
-                return r_width;
+                return r_Width;
             }
         }
 
@@ -33,32 +29,29 @@ namespace B20_Ex02
         {
             get
             {
-                return r_height;
+                return r_Height;
             }
         }
 
-        public char GetCardValue(Location i_LocationOnBoard)
+        public char GetCardValue(Location i_CardsLocationOnBoard)
         {
-            return m_Cards[i_LocationOnBoard.Row, i_LocationOnBoard.Column].CardValue;
+            return m_Cards[i_CardsLocationOnBoard.Row, i_CardsLocationOnBoard.Column].CardValue;
         }
 
         public void ShuffleCards()
         {
-            int numOfUniqueValues = (Width * Height) / 2;
-
+            int numOfUniqueValues = (Height * Width) / 2;
             char[] boardValues = new char[numOfUniqueValues];
 
-            // if numOfUniqueValues = 4 , i need the letters A B C D
             List<char> boardLetters = getBoardLetters(numOfUniqueValues);
-
             List<char> shuffledLetters = getShuffledLetters(boardLetters);
-
             initializeBoardCards(shuffledLetters);
         }
 
         private void initializeBoardCards(List<char> i_BoardLetters)
         {
             int indexOfLetter = 0;
+
             for (int rowIndex = 0; rowIndex < Height; rowIndex++)
             {
                 for (int columnIndex = 0; columnIndex < Width; columnIndex++)
@@ -77,8 +70,7 @@ namespace B20_Ex02
             for(int index = 0; index < numOfLetters; index++)
             {
                 int chosenRandomIndex = numberGenerator.Next(i_OriginalLettersList.Count - 1);
-                //Console.WriteLine("Random: {0} Setting value {1} in index {2}", chosenRandomIndex, i_OriginalLettersList[chosenRandomIndex], index);
-                shuffledLettersList.Add(i_OriginalLettersList[chosenRandomIndex]); //[index] = i_OriginalLettersList[chosenRandomIndex];
+                shuffledLettersList.Add(i_OriginalLettersList[chosenRandomIndex]);
                 i_OriginalLettersList.RemoveAt(chosenRandomIndex);
             }
 
@@ -89,10 +81,10 @@ namespace B20_Ex02
         {
             string allLetters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
             string chosenLetters = allLetters.Substring(0, i_NumOfLetters);
+            string boardLetters = string.Concat(chosenLetters,chosenLetters);
+            List<char> boardLettersList = new List<char>(boardLetters.ToCharArray());
 
-            string boardLetters = chosenLetters + chosenLetters;
-
-            return new List<char>(boardLetters.ToCharArray());
+            return boardLettersList;
         }
     }
 }

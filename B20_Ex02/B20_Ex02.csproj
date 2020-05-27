@@ -42,8 +42,8 @@
     <Compile Include="Player.cs" />
     <Compile Include="PlayersManager.cs" />
     <Compile Include="Program.cs" />
-    <Compile Include="UI.cs" />
-    <Compile Include="UIBoard.cs" />
+    <Compile Include="ConsoleUi.cs" />
+    <Compile Include="UiBoard.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="Ex02.ConsoleUtils">

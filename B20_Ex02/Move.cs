@@ -6,40 +6,40 @@ namespace B20_Ex02
 {
     public class Move
     {
-        private Location firstCardLocation;
-        private Location secondCardLocation;
-        private Player currentPlayer;
+        private Location m_FirstCardLocation;
+        private Location m_SecondCardLocation;
+        private Player m_Player;
 
         public Move(Player i_Player)
         {
-            this.currentPlayer = i_Player;
+            this.m_Player = i_Player;
         }
 
         public void SetLocation(Location i_CardLocation)
         {
-            if(firstCardLocation == null)
+            if(m_FirstCardLocation == null)
             {
-                firstCardLocation = i_CardLocation;
+                m_FirstCardLocation = i_CardLocation;
             }
             else
             {
-                secondCardLocation = i_CardLocation;
+                m_SecondCardLocation = i_CardLocation;
             }
         }
 
         public Location GetLocationOfFirstCard()
         {
-            return firstCardLocation;
+            return m_FirstCardLocation;
         }
 
         public Location GetLocationOfSecondCard()
         {
-            return secondCardLocation;
+            return m_SecondCardLocation;
         }
 
         public Player GetPlayer()
         {
-            return currentPlayer;
+            return m_Player;
         }
     }
 

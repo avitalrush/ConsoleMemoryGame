@@ -11,12 +11,12 @@ namespace B20_Ex02
         private bool m_IsMyTurn;
         private ePlayerType m_PlayerType;
 
-        public Player(string i_Name, ePlayerType i_Type, bool i_IsItMyTurn)
+        public Player(string i_Name, ePlayerType i_Type, bool i_IsPlayersTurn)
         {
             this.m_PlayerName = i_Name;
             this.m_Points = 0;
+            this.m_IsMyTurn = i_IsPlayersTurn;
             this.m_PlayerType = i_Type;
-            this.m_IsMyTurn = i_IsItMyTurn;
         }
 
         public enum ePlayerType
