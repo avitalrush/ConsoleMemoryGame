@@ -36,5 +36,11 @@ namespace B20_Ex02
         {
             return secondCardLocation;
         }
+
+        public Player GetPlayer()
+        {
+            return currentPlayer;
+        }
     }
+
 }

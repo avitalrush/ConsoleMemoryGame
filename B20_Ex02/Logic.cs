@@ -13,6 +13,7 @@ namespace B20_Ex02
         // CTOR:
         public Logic()
         {
+            m_AllPlayers = new PlayersManager();
         }
 
         // METHODS:
@@ -24,9 +25,9 @@ namespace B20_Ex02
             }
         }
 
-        public void SetBoard(LogicBoard i_Board)
+        public void SetBoard(int i_Height, int i_Width)
         {
-            m_Board = i_Board;
+            m_Board = new LogicBoard(i_Height, i_Width);
         }
 
         public Player GetCurrentPlayer()
@@ -44,9 +45,9 @@ namespace B20_Ex02
             int height = m_Board.Height;
             string strIndex;
 
-            for (int i = 0; i < width; i++)
+            for (int i = 0; i < height; i++)
             {
-                for (int j = 0; j < height; j++)
+                for (int j = 0; j < width; j++)
                 {
                     if(tempCells[i, j].isHidden)
                     {
@@ -61,20 +62,22 @@ namespace B20_Ex02
             return validMoves;
         }
 
-        public string CreateStringIndex(int i_column, int i_row)
+        public string CreateStringIndex(int i_Row, int i_Column)
         {
-            // method gets i=E, j=4 --> returns "E4"
+            // method gets i=5, j=4 --> returns "E4"
 
-            string strColumn = i_column.ToString();
-            string strRow = i_row.ToString();
-            string strIndex = string.Concat(strColumn, strRow);
-            return strIndex;
+            int intRow = i_Row + 1;
+            int intColumn = 'A' + i_Column;
+            char charColumn = Convert.ToChar(intColumn);
+
+            //Console.WriteLine("strIndex: {0}", String.Format("{0}{1}", charColumn, strRow));
+            return String.Format("{0}{1}", charColumn, intRow);
         }
 
         public bool CheckIfValidMovesLeft()
         {
-            List<string> validMoves = GetValidMovesList();
-            return validMoves.Count == 0;
+            // if there's only one item in validMovesList --> it can be only 'Q' --> the game ends
+            return GetValidMovesList().Count > 1;
         }
 
         public void UndoMove(Move i_Move)
@@ -111,10 +114,25 @@ namespace B20_Ex02
             m_Board.RevealCard(i_CellLocation);
         }
 
-        public Location GetCellLocation(string i_PlayerMoveStr)
+        public Location GetCellLocation(string i_StrLocation)
         {
-            Location cellLocation = new Location(i_PlayerMoveStr[0], i_PlayerMoveStr[1]);
+            Location cellLocation = new Location(i_StrLocation[0]-'0' - 1, i_StrLocation[1]-'0' - 1);
             return cellLocation;
+        }
+
+        public void SwitchTurnToMainPlayer()
+        {
+            m_AllPlayers.SwitchTurnToMainPlayer();
+        }
+
+        public string[] GetPlayersNames()
+        {
+            return m_AllPlayers.GetPlayersNames();
+        }
+
+        public int[] GetPlayersPoints()
+        {
+            return m_AllPlayers.GetPlayersPoints();
         }
     }
 }

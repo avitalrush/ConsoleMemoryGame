@@ -82,5 +82,31 @@ namespace B20_Ex02
         {
             m_CurrentPlayer.Points++;
         }
+
+        public void SwitchTurnToMainPlayer()
+        {
+            m_Player1.IsMyTurn = true;
+            m_Player2.IsMyTurn = false;
+        }
+
+        public string[] GetPlayersNames()
+        {
+            string[] playersNames = new string[2];
+
+            playersNames[0] = m_Player1.Name;
+            playersNames[1] = m_Player2.Name;
+
+            return playersNames;
+        }
+
+        public int[] GetPlayersPoints()
+        {
+            int[] playersPoints = new int[2];
+
+            playersPoints[0] = m_Player1.Points;
+            playersPoints[1] = m_Player2.Points;
+
+            return playersPoints;
+        }
     }
 }
