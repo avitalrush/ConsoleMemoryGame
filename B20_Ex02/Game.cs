@@ -104,7 +104,7 @@ namespace B20_Ex02
                     Console.WriteLine(k_invalidMsg);
                 }
             }
-            while(!validBoardSize);
+            while (!validBoardSize);
 
             initializeLogicBoard(height, width);
             initializeUiBoard(height, width);
