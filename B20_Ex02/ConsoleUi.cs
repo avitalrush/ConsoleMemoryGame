@@ -114,7 +114,7 @@ namespace B20_Ex02
                 }
                 else
                 {
-                    validCardChoice = CheckIfValidCardChoice(cardChoiceStr, i_ValidCardsToChoose);
+                    validCardChoice = checkIfValidCardChoice(cardChoiceStr, i_ValidCardsToChoose);
                     if (!validCardChoice)
                     {
                         Console.WriteLine(invalidCardMsg);
@@ -127,7 +127,7 @@ namespace B20_Ex02
             return cardChoiceStr;
         }
 
-        private bool CheckIfValidCardChoice(string i_CardChoiceStr, List<string> i_ValidCardsToChoose)
+        private bool checkIfValidCardChoice(string i_CardChoiceStr, List<string> i_ValidCardsToChoose)
         {
             return i_ValidCardsToChoose.Contains(i_CardChoiceStr);
         }
@@ -240,7 +240,7 @@ namespace B20_Ex02
                 for (j = 1; j <= i_Width; j++)
                 {
                     i_BoardRow.Append(' ');
-                    if (i_LogicBoardCells[i - 1, j - 1].isHidden)
+                    if (i_LogicBoardCells[i - 1, j - 1].IsHidden)
                     {
                         i_BoardRow.Append(' ');
                     }

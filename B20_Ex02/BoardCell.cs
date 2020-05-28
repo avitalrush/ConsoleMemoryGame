@@ -13,7 +13,7 @@ namespace B20_Ex02
             m_IsHidden = true;
         }
 
-        public bool isHidden
+        public bool IsHidden
         {
             get
             {

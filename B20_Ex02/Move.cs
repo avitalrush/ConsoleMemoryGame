@@ -42,5 +42,4 @@ namespace B20_Ex02
             return m_Player;
         }
     }
-
 }

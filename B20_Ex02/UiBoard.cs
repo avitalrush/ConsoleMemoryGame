@@ -81,7 +81,7 @@ namespace B20_Ex02
         {
             string allLetters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
             string chosenLetters = allLetters.Substring(0, i_NumOfLetters);
-            string boardLetters = string.Concat(chosenLetters,chosenLetters);
+            string boardLetters = string.Concat(chosenLetters, chosenLetters);
             List<char> boardLettersList = new List<char>(boardLetters.ToCharArray());
 
             return boardLettersList;

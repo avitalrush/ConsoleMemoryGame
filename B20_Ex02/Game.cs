@@ -236,9 +236,9 @@ namespace B20_Ex02
         {
             char xCord = i_LocationStr[0];
             char yCord = i_LocationStr[1];
-            int xCordNum = (int)(xCord - 'A')+1;
+            int xCordNum = (int)(xCord - 'A') + 1;
 
-            return string.Format("{0}{1}", xCordNum,yCord);
+            return string.Format("{0}{1}", xCordNum, yCord);
         }
 
         private string getValidCardChoiceFromComputer(List<string> i_ValidCards)
