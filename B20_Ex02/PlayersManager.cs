@@ -110,5 +110,11 @@ namespace B20_Ex02
 
             return playersPoints;
         }
+
+        public void ResetPlayersScore()
+        {
+            m_Player1.Points = 0;
+            m_Player2.Points = 0;
+        }
     }
 }

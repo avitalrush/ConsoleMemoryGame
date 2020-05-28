@@ -36,6 +36,11 @@ namespace B20_Ex02
             List<string> validCardsToChoose;
             const int k_NumOfCardsToChoose = 2;
 
+            if(m_AnotherRound)
+            {
+                m_Logic.ResetPlayersScore();
+            }
+
             initializeBoards();
             clearAndPrintBoard();
             while(validMovesLeft && !m_QuitGame)
@@ -67,7 +72,7 @@ namespace B20_Ex02
             {
                 printGameResult();
                 m_AnotherRound = m_ConsoleUi.AskUserForAnotherRound();
-                if(!m_AnotherRound)
+                if(!m_AnotherRound || m_QuitGame)
                 {
                     m_ConsoleUi.PrintGoodbyeMsg();
                 }

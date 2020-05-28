@@ -165,12 +165,13 @@ namespace B20_Ex02
             bool validInput = false;
             const string k_Yes = "Y";
             const string k_No = "N";
+            const string k_Quit = "Q";
 
             do
             {
                 Console.WriteLine("Do you want to play another round? For yes press {0}, for No press {1}", k_Yes, k_No);
                 inputStr = Console.ReadLine();
-                validInput = inputStr.Equals(k_Yes) || inputStr.Equals(k_No);
+                validInput = inputStr.Equals(k_Yes) || inputStr.Equals(k_No) || inputStr.Equals(k_Quit);
                 if (!validInput)
                 {
                     Console.WriteLine("Invalid input");

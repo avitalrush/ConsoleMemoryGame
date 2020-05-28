@@ -126,5 +126,10 @@ namespace B20_Ex02
         {
             return m_AllPlayers.GetPlayersPoints();
         }
+
+        public void ResetPlayersScore()
+        {
+            m_AllPlayers.ResetPlayersScore();
+        }
     }
 }
