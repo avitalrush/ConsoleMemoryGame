@@ -68,16 +68,16 @@ namespace B20_Ex02
             int opponentType;
             string opponentTypeStr;
             bool validType = false;
-            const string k_HumenOp = "0";
+            const string k_HumanOp = "0";
             const string k_ComputerOp = "1";
-            string enterTypeMsg = string.Format("{0}, please choose your opponent. For Human press {1}, for Computer press {2}", i_FirstPlayerName, k_HumenOp, k_ComputerOp);
+            string enterTypeMsg = string.Format("{0}, please choose your opponent. For Human press {1}, for Computer press {2}", i_FirstPlayerName, k_HumanOp, k_ComputerOp);
             string errorMsg = "Invalid opponent type";
             
             do
             {
                 Console.WriteLine(enterTypeMsg);
                 opponentTypeStr = Console.ReadLine();
-                validType = opponentTypeStr.Equals(k_HumenOp) || opponentTypeStr.Equals(k_ComputerOp);
+                validType = opponentTypeStr.Equals(k_HumanOp) || opponentTypeStr.Equals(k_ComputerOp);
                 if(!validType)
                 {
                     Console.WriteLine(errorMsg);
