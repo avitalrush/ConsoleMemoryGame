@@ -36,19 +36,19 @@ namespace B20_Ex02
             List<string> validCardsToChoose;
             const int k_NumOfCardsToChoose = 2;
 
-            if(m_AnotherRound)
+            if (m_AnotherRound)
             {
                 m_Logic.ResetPlayersScore();
             }
 
             initializeBoards();
             clearAndPrintBoard();
-            while(validMovesLeft && !m_QuitGame)
+            while (validMovesLeft && !m_QuitGame)
             {
                 currentPlayer = m_Logic.GetCurrentPlayer();
                 currentMove = initializeMove(currentPlayer);
 
-                for(int i = 0; i < k_NumOfCardsToChoose && !m_QuitGame; i++)
+                for (int i = 0; i < k_NumOfCardsToChoose && !m_QuitGame; i++)
                 {
                     validCardsToChoose = m_Logic.GetValidCardsList();
                     if (currentPlayer.PlayerType == Player.ePlayerType.Human)
@@ -68,11 +68,11 @@ namespace B20_Ex02
                 }
             }
 
-            if(!m_QuitGame)
+            if (!m_QuitGame)
             {
                 printGameResult();
                 m_AnotherRound = m_ConsoleUi.AskUserForAnotherRound();
-                if(!m_AnotherRound || m_QuitGame)
+                if (!m_AnotherRound || m_QuitGame)
                 {
                     m_ConsoleUi.PrintGoodbyeMsg();
                 }
