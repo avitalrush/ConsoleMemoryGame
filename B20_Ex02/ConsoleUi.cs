@@ -68,16 +68,16 @@ namespace B20_Ex02
             int opponentType;
             string opponentTypeStr;
             bool validType = false;
-            const string k_HumenOp = "0";
+            const string k_HumanOp = "0";
             const string k_ComputerOp = "1";
-            string enterTypeMsg = string.Format("{0}, please choose your opponent. For Human press {1}, for Computer press {2}", i_FirstPlayerName, k_HumenOp, k_ComputerOp);
+            string enterTypeMsg = string.Format("{0}, please choose your opponent. For Human press {1}, for Computer press {2}", i_FirstPlayerName, k_HumanOp, k_ComputerOp);
             string errorMsg = "Invalid opponent type";
             
             do
             {
                 Console.WriteLine(enterTypeMsg);
                 opponentTypeStr = Console.ReadLine();
-                validType = opponentTypeStr.Equals(k_HumenOp) || opponentTypeStr.Equals(k_ComputerOp);
+                validType = opponentTypeStr.Equals(k_HumanOp) || opponentTypeStr.Equals(k_ComputerOp);
                 if(!validType)
                 {
                     Console.WriteLine(errorMsg);
@@ -114,7 +114,7 @@ namespace B20_Ex02
                 }
                 else
                 {
-                    validCardChoice = CheckIfValidCardChoice(cardChoiceStr, i_ValidCardsToChoose);
+                    validCardChoice = checkIfValidCardChoice(cardChoiceStr, i_ValidCardsToChoose);
                     if (!validCardChoice)
                     {
                         Console.WriteLine(invalidCardMsg);
@@ -127,7 +127,7 @@ namespace B20_Ex02
             return cardChoiceStr;
         }
 
-        private bool CheckIfValidCardChoice(string i_CardChoiceStr, List<string> i_ValidCardsToChoose)
+        private bool checkIfValidCardChoice(string i_CardChoiceStr, List<string> i_ValidCardsToChoose)
         {
             return i_ValidCardsToChoose.Contains(i_CardChoiceStr);
         }
@@ -165,12 +165,13 @@ namespace B20_Ex02
             bool validInput = false;
             const string k_Yes = "Y";
             const string k_No = "N";
+            const string k_Quit = "Q";
 
             do
             {
                 Console.WriteLine("Do you want to play another round? For yes press {0}, for No press {1}", k_Yes, k_No);
                 inputStr = Console.ReadLine();
-                validInput = inputStr.Equals(k_Yes) || inputStr.Equals(k_No);
+                validInput = inputStr.Equals(k_Yes) || inputStr.Equals(k_No) || inputStr.Equals(k_Quit);
                 if (!validInput)
                 {
                     Console.WriteLine("Invalid input");
@@ -240,7 +241,7 @@ namespace B20_Ex02
                 for (j = 1; j <= i_Width; j++)
                 {
                     i_BoardRow.Append(' ');
-                    if (i_LogicBoardCells[i - 1, j - 1].isHidden)
+                    if (i_LogicBoardCells[i - 1, j - 1].IsHidden)
                     {
                         i_BoardRow.Append(' ');
                     }

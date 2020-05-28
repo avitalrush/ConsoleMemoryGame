@@ -51,12 +51,12 @@ namespace B20_Ex02
 
         public void HideCard(Location i_CardLocationOnBoard)
         {
-            m_Cells[i_CardLocationOnBoard.Row, i_CardLocationOnBoard.Column].isHidden = true;
+            m_Cells[i_CardLocationOnBoard.Row, i_CardLocationOnBoard.Column].IsHidden = true;
         }
 
         public void RevealCard(Location i_CardLocationOnBoard)
         {
-            m_Cells[i_CardLocationOnBoard.Row, i_CardLocationOnBoard.Column].isHidden = false;
+            m_Cells[i_CardLocationOnBoard.Row, i_CardLocationOnBoard.Column].IsHidden = false;
         }
     }
 }

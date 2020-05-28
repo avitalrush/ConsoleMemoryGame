@@ -44,7 +44,7 @@ namespace B20_Ex02
             {
                 for (int j = 0; j < width; j++)
                 {
-                    if(boardCells[i, j].isHidden)
+                    if(boardCells[i, j].IsHidden)
                     {
                         cellLocationStr = CreateStrLocation(i, j);
                         validCards.Add(cellLocationStr);
@@ -107,7 +107,7 @@ namespace B20_Ex02
 
         public Location GetLocationFromStr(string i_LocationStr)
         {
-            Location cellLocation = new Location(i_LocationStr[0]- '0' - 1, i_LocationStr[1]- '0' - 1);
+            Location cellLocation = new Location(i_LocationStr[0] - '0' - 1, i_LocationStr[1] - '0' - 1);
 
             return cellLocation;
         }
@@ -125,6 +125,11 @@ namespace B20_Ex02
         public int[] GetPlayersPoints()
         {
             return m_AllPlayers.GetPlayersPoints();
+        }
+
+        public void ResetPlayersScore()
+        {
+            m_AllPlayers.ResetPlayersScore();
         }
     }
 }
