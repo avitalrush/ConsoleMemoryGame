@@ -6,12 +6,12 @@ namespace B20_Ex02
 {
     public class Game
     {
-        private bool m_AnotherRound;
-        private bool m_QuitGame;
-        private readonly Logic r_Logic;
-        private readonly ConsoleUi r_ConsoleUi;
         private const string k_QuitMoveString = "Q";
         private const int k_SleepTimeMiliSec = 2000;
+        private readonly Logic r_Logic;
+        private readonly ConsoleUi r_ConsoleUi;
+        private bool m_AnotherRound;
+        private bool m_QuitGame;
 
         public Game()
         {
