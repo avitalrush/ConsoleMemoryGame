@@ -232,13 +232,13 @@ namespace B20_Ex02
             r_ConsoleUi.PrintBoard(logicBoard);
         }
 
-        private void revealCardInLocation(string i_LocationStr, ref Move i_CurrentMove)
+        private void revealCardInLocation(string i_LocationStr, ref Move io_CurrentMove)
         {
             string locationDigitsStr = convertLettersToDigits(i_LocationStr);
             Location cardLocation = r_Logic.GetLocationFromStr(locationDigitsStr);
 
             r_Logic.RevealCard(cardLocation);
-            i_CurrentMove.SetLocation(cardLocation);
+            io_CurrentMove.SetLocation(cardLocation);
             clearAndPrintBoard();
         }
 
@@ -259,7 +259,7 @@ namespace B20_Ex02
             return i_ValidCardsToChoose[chosenRandomIndex];
         }
 
-        private void makePlayerCardChoice(List<string> i_ValidCards, string i_PlayerName, ref Move i_CurrentMove)
+        private void makePlayerCardChoice(List<string> i_ValidCards, string i_PlayerName, ref Move io_CurrentMove)
         {
             string cardChoiceStr = r_ConsoleUi.GetValidCardChoiceFromPlayer(i_ValidCards, i_PlayerName);
 
@@ -269,16 +269,16 @@ namespace B20_Ex02
             }
             else
             {
-                revealCardInLocation(cardChoiceStr, ref i_CurrentMove);
+                revealCardInLocation(cardChoiceStr, ref io_CurrentMove);
             }
         }
 
-        private void makeComputersCardChoice(List<string> i_ValidCards, ref Move i_CurrentMove)
+        private void makeComputersCardChoice(List<string> i_ValidCards, ref Move io_CurrentMove)
         {
             string cardChoiceStr = getValidCardChoiceFromComputer(i_ValidCards);
 
             r_ConsoleUi.PrintComputerMoveMsg();
-            revealCardInLocation(cardChoiceStr, ref i_CurrentMove);
+            revealCardInLocation(cardChoiceStr, ref io_CurrentMove);
         }
     }
 }

@@ -221,7 +221,7 @@ namespace B20_Ex02
             return separationRow;
         }
 
-        private void createFrameRow(ref StringBuilder i_FullBoard)
+        private void createFrameRow(ref StringBuilder io_FullBoard)
         {
             StringBuilder frameRow = new StringBuilder();
             StringBuilder separationRow = createSeparationRow();
@@ -235,11 +235,11 @@ namespace B20_Ex02
                 frameRow.Append("   ");
             }
 
-            assembleFullBoard(ref i_FullBoard, frameRow);
-            assembleFullBoard(ref i_FullBoard, separationRow);
+            assembleFullBoard(ref io_FullBoard, frameRow);
+            assembleFullBoard(ref io_FullBoard, separationRow);
         }
 
-        private void createBoardRows(ref StringBuilder i_FullBoard, BoardCell[,] i_LogicBoardCells)
+        private void createBoardRows(ref StringBuilder io_FullBoard, BoardCell[,] i_LogicBoardCells)
         {
             StringBuilder boardRow = new StringBuilder();
             StringBuilder separationRow = createSeparationRow();
@@ -270,14 +270,14 @@ namespace B20_Ex02
                     boardRow.Append('|');
                 }
 
-                assembleFullBoard(ref i_FullBoard, boardRow);
-                assembleFullBoard(ref i_FullBoard, separationRow);
+                assembleFullBoard(ref io_FullBoard, boardRow);
+                assembleFullBoard(ref io_FullBoard, separationRow);
             }
         }
 
-        private void assembleFullBoard(ref StringBuilder i_FullBoard, StringBuilder i_RowToBeAppended)
+        private void assembleFullBoard(ref StringBuilder io_FullBoard, StringBuilder i_RowToBeAppended)
         {
-            i_FullBoard.AppendLine(i_RowToBeAppended.ToString());
+            io_FullBoard.AppendLine(i_RowToBeAppended.ToString());
         }
 
         public void PrintWinnerMsg(string i_WinnerPlayer)
