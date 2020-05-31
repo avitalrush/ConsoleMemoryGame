@@ -6,9 +6,9 @@ namespace B20_Ex02
 {
     public class Move
     {
+        private readonly Player r_Player;
         private Location m_FirstCardLocation;
         private Location m_SecondCardLocation;
-        private readonly Player r_Player;
 
         public Move(Player i_Player)
         {

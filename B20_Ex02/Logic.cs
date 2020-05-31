@@ -6,8 +6,8 @@ namespace B20_Ex02
 {
     public class Logic
     {
-        private LogicBoard m_Board;
         private readonly PlayersManager r_AllPlayers;
+        private LogicBoard m_Board;
 
         public Logic()
         {
