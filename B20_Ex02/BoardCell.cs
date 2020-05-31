@@ -15,15 +15,9 @@ namespace B20_Ex02
 
         public bool IsHidden
         {
-            get
-            {
-                return m_IsHidden;
-            }
+            get { return m_IsHidden; }
 
-            set
-            {
-                m_IsHidden = value;
-            }
+            set { m_IsHidden = value; }
         }
     }
 }
