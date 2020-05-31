@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.Security.Cryptography;
 using System.Text;
 
 namespace B20_Ex02
@@ -8,6 +9,14 @@ namespace B20_Ex02
     public class ConsoleUi
     {
         private UiBoard m_Board;
+        private const string k_HumanOpponent = "0";
+        private const string k_ComputerOpponent = "1";
+        private const string k_Yes = "Y";
+        private const string k_No = "N";
+        private const string k_Quit = "Q";
+        private const int k_ValidInputSize = 2;
+        private const int k_SleepTimeMilliSec = 2000;
+        private static readonly List<string> sr_SupportedBoardDimensions = new List<string>() {"4", "5", "6"}; 
 
         public void SetBoard(UiBoard i_Board)
         {
@@ -16,15 +25,15 @@ namespace B20_Ex02
 
         public int GetBoardWidth()
         {
-            return GetDimension("width");
+            return getDimension("width");
         }
 
         public int GetBoardHeight()
         {
-            return GetDimension("height");
+            return getDimension("height");
         }
 
-        public int GetDimension(string i_Dimension)
+        private int getDimension(string i_Dimension)
         {
             string enterInputMsg = string.Format("Please enter the board's {0} (between 4-6):", i_Dimension);
             string invalidMsg = string.Format("Invalid {0}. Please enter the board's {0} (between 4-6):", i_Dimension);
@@ -36,7 +45,7 @@ namespace B20_Ex02
             do
             {
                 dimensionStr = Console.ReadLine();
-                inputIsValid = ValidateDimension(dimensionStr);
+                inputIsValid = validateDimension(dimensionStr);
                 if (!inputIsValid)
                 {
                     Console.WriteLine(invalidMsg);
@@ -49,9 +58,9 @@ namespace B20_Ex02
             return dimensionNum;
         }
 
-        public bool ValidateDimension(string i_Dimension)
+        private bool validateDimension(string i_Dimension)
         {
-            return i_Dimension == "4" || i_Dimension == "5" || i_Dimension == "6";
+            return sr_SupportedBoardDimensions.Contains(i_Dimension);
         }
 
         public string GetPlayerName(string i_NumberOfPlayer)
@@ -68,20 +77,18 @@ namespace B20_Ex02
             int opponentType;
             string opponentTypeStr;
             bool validType = false;
-            const string k_HumanOp = "0";
-            const string k_ComputerOp = "1";
-            string enterTypeMsg = string.Format("{0}, please choose your opponent. For Human press {1}, for Computer press {2}", i_FirstPlayerName, k_HumanOp, k_ComputerOp);
-            string errorMsg = "Invalid opponent type";
+
+            string enterTypeMsg = string.Format("{0}, please choose your opponent. For Human press {1}, for Computer press {2}", i_FirstPlayerName, k_HumanOpponent, k_ComputerOpponent);
+            const string k_ErrorMsg = "Invalid opponent type";
             
             do
             {
                 Console.WriteLine(enterTypeMsg);
                 opponentTypeStr = Console.ReadLine();
-                validType = opponentTypeStr.Equals(k_HumanOp) || opponentTypeStr.Equals(k_ComputerOp);
+                validType = opponentTypeStr.Equals(k_HumanOpponent) || opponentTypeStr.Equals(k_ComputerOpponent);
                 if(!validType)
                 {
-                    Console.WriteLine(errorMsg);
-                    Console.WriteLine();
+                    Console.WriteLine(k_ErrorMsg + Environment.NewLine);
                 }
             }
             while (!validType);
@@ -94,40 +101,50 @@ namespace B20_Ex02
 
         public string GetValidCardChoiceFromPlayer(List<string> i_ValidCardsToChoose, string i_PlayersName)
         {
-            string cardChoiceStr;
-            bool validCardChoice = false;
-            bool validInput = false;
-            string chooseCardMsg = string.Format("{0}, please choose a card: ", i_PlayersName);
-            string invalidCardMsg = "Invalid card choice (card is already shown or location does not exist on board). Please choose another card:";
-            string invalidInputMsg = "Invalid input (input should contain an Uppercase letter and a digit only). Please choose another card:";
+            string cardLocationStr;
+            bool cardCanBeChosen;
+            const string k_InvalidCardMsg = "Invalid card choice (card is already shown or location does not exist on board), please try again";
 
-            Console.WriteLine(chooseCardMsg);
-            cardChoiceStr = Console.ReadLine();
+            i_ValidCardsToChoose.Add(k_Quit);
+            do
+            {
+                cardLocationStr = getValidCardLocation(i_PlayersName);
+                cardCanBeChosen = checkIfValidCardToChoose(cardLocationStr, i_ValidCardsToChoose);
+
+                if (!cardCanBeChosen)
+                {
+                    Console.WriteLine(k_InvalidCardMsg);
+                }
+            }
+            while (!cardCanBeChosen);
+
+            return cardLocationStr;
+        }
+
+        private string getValidCardLocation(string i_PlayersName)
+        {
+            string chooseCardMsg = string.Format("{0}, please choose a card: ", i_PlayersName);
+            string invalidInputMsg = "Invalid input (input should contain an Uppercase letter and a digit only), please try again";
+            string cardChoiceStr;
+            bool validInput;
 
             do
             {
+                Console.WriteLine(chooseCardMsg);
+                cardChoiceStr = Console.ReadLine();
                 validInput = checkIfValidInput(cardChoiceStr);
+
                 if(!validInput)
                 {
                     Console.WriteLine(invalidInputMsg);
-                    cardChoiceStr = Console.ReadLine();
-                }
-                else
-                {
-                    validCardChoice = checkIfValidCardChoice(cardChoiceStr, i_ValidCardsToChoose);
-                    if (!validCardChoice)
-                    {
-                        Console.WriteLine(invalidCardMsg);
-                        cardChoiceStr = Console.ReadLine();
-                    }
                 }
             }
-            while (!validInput || !validCardChoice);
+            while(!validInput);
 
             return cardChoiceStr;
         }
 
-        private bool checkIfValidCardChoice(string i_CardChoiceStr, List<string> i_ValidCardsToChoose)
+        private bool checkIfValidCardToChoose(string i_CardChoiceStr, List<string> i_ValidCardsToChoose)
         {
             return i_ValidCardsToChoose.Contains(i_CardChoiceStr);
         }
@@ -136,13 +153,13 @@ namespace B20_Ex02
         {
             bool validInput;
 
-            if (i_InputStr.Length == 2)
+            if (i_InputStr.Length == k_ValidInputSize)
             {
                 char column = i_InputStr[0];
                 char row = i_InputStr[1];
                 validInput = char.IsUpper(column) && char.IsDigit(row);
             }
-            else if (i_InputStr.Equals("Q"))
+            else if (i_InputStr.Equals(k_Quit))
             {
                 validInput = true;
             }
@@ -162,10 +179,7 @@ namespace B20_Ex02
         public bool AskUserForAnotherRound()
         {
             string inputStr;
-            bool validInput = false;
-            const string k_Yes = "Y";
-            const string k_No = "N";
-            const string k_Quit = "Q";
+            bool validInput;
 
             do
             {
@@ -174,11 +188,11 @@ namespace B20_Ex02
                 validInput = inputStr.Equals(k_Yes) || inputStr.Equals(k_No) || inputStr.Equals(k_Quit);
                 if (!validInput)
                 {
-                    Console.WriteLine("Invalid input");
-                    Console.WriteLine();
+                    Console.WriteLine("Invalid input" + Environment.NewLine);
                 }
             }
             while(!validInput);
+
             Console.WriteLine();
 
             return inputStr.Equals(k_Yes);
@@ -187,13 +201,13 @@ namespace B20_Ex02
         public void PrintBoard(BoardCell[,] i_LogicBoardCells)
         {
             StringBuilder frameRow = new StringBuilder();
-            StringBuilder seperationRow = new StringBuilder();
+            StringBuilder separationRow = new StringBuilder();
             StringBuilder boardRow = new StringBuilder();
             StringBuilder fullBoard = new StringBuilder();
 
             createFrameRow(ref fullBoard, ref frameRow, m_Board.Width);
-            createSeperationRow(ref fullBoard, ref seperationRow, m_Board.Width);
-            createBoardRows(ref fullBoard, ref boardRow, ref seperationRow, i_LogicBoardCells, m_Board.Height, m_Board.Width);
+            createSeparationRow(ref fullBoard, ref separationRow, m_Board.Width);
+            createBoardRows(ref fullBoard, ref boardRow, ref separationRow, i_LogicBoardCells, m_Board.Height, m_Board.Width);
 
             Console.WriteLine(fullBoard);
         }
@@ -201,10 +215,9 @@ namespace B20_Ex02
         private void createFrameRow(ref StringBuilder i_FullBoard, ref StringBuilder i_FrameRow, int i_Width)
         {
             char column = 'A';
-            int i;
 
             i_FrameRow.Append("    ");
-            for (i = 1; i <= i_Width; i++)
+            for (int i = 1; i <= i_Width; i++)
             {
                 i_FrameRow.Append(column++);
                 i_FrameRow.Append("   ");
@@ -213,12 +226,10 @@ namespace B20_Ex02
             assembleFullBoard(ref i_FullBoard, ref i_FrameRow);
         }
 
-        private void createSeperationRow(ref StringBuilder i_FullBoard, ref StringBuilder i_SeparationRow, int i_Width)
+        private void createSeparationRow(ref StringBuilder i_FullBoard, ref StringBuilder i_SeparationRow, int i_Width)
         {
-            int i;
-
             i_SeparationRow.Append("  ");
-            for (i = 1; i <= (4 * i_Width) + 1; i++)
+            for (int i = 1; i <= (4 * i_Width) + 1; i++)
             {
                 i_SeparationRow.Append('=');
             }
@@ -229,25 +240,24 @@ namespace B20_Ex02
         private void createBoardRows(ref StringBuilder i_FullBoard, ref StringBuilder i_BoardRow, ref StringBuilder i_SeparationRow, 
                                      BoardCell[,] i_LogicBoardCells, int i_Height, int i_Width)
         {
-            int i, j;
             Location cardLocation;
 
-            for (i = 1; i <= i_Height; i++)
+            for (int row = 1; row <= i_Height; row++)
             {
                 i_BoardRow.Remove(0, i_BoardRow.Length);
-                i_BoardRow.Append(i);
+                i_BoardRow.Append(row);
                 i_BoardRow.Append(' ');
                 i_BoardRow.Append('|');
-                for (j = 1; j <= i_Width; j++)
+                for (int column = 1; column <= i_Width; column++)
                 {
                     i_BoardRow.Append(' ');
-                    if (i_LogicBoardCells[i - 1, j - 1].IsHidden)
+                    if (i_LogicBoardCells[row - 1, column - 1].IsHidden)
                     {
                         i_BoardRow.Append(' ');
                     }
                     else
                     {
-                        cardLocation = new Location(j - 1, i - 1);
+                        cardLocation = new Location(column - 1, row - 1);
                         i_BoardRow.Append(m_Board.GetCardValue(cardLocation));
                     }
 
@@ -277,13 +287,13 @@ namespace B20_Ex02
 
         public void PrintGoodbyeMsg()
         {
-            Console.WriteLine("Thanks for playing!");
+            Console.WriteLine("Thanks for playing!" + Environment.NewLine);
         }
 
         public void PrintComputerMoveMsg()
         {
             Console.WriteLine("Computer is making a move...");
-            System.Threading.Thread.Sleep(2000);
+            System.Threading.Thread.Sleep(k_SleepTimeMilliSec);
         }
 
         public void PrintPoints(string[] i_PlayersNames, int[] i_PlayersPoints)

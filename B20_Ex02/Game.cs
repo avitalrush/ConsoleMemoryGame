@@ -8,15 +8,17 @@ namespace B20_Ex02
     {
         private bool m_AnotherRound;
         private bool m_QuitGame;
-        private Logic m_Logic;
-        private ConsoleUi m_ConsoleUi;
+        private readonly Logic r_Logic;
+        private readonly ConsoleUi r_ConsoleUi;
+        private const string k_QuitMoveString = "Q";
+        private const int k_SleepTimeMiliSec = 2000;
 
         public Game()
         {
             m_AnotherRound = true;
             m_QuitGame = false;
-            m_Logic = new Logic();
-            m_ConsoleUi = new ConsoleUi();
+            r_Logic = new Logic();
+            r_ConsoleUi = new ConsoleUi();
         }
 
         public void Start()
@@ -33,75 +35,83 @@ namespace B20_Ex02
             Player currentPlayer;
             Move currentMove;
             bool validMovesLeft = true;
-            List<string> validCardsToChoose;
-            const int k_NumOfCardsToChoose = 2;
 
-            if (m_AnotherRound)
-            {
-                m_Logic.ResetPlayersScore();
-            }
-
+            r_Logic.ResetPlayersScore();
             initializeBoards();
             clearAndPrintBoard();
             while (validMovesLeft && !m_QuitGame)
             {
-                currentPlayer = m_Logic.GetCurrentPlayer();
-                currentMove = initializeMove(currentPlayer);
-
-                for (int i = 0; i < k_NumOfCardsToChoose && !m_QuitGame; i++)
-                {
-                    validCardsToChoose = m_Logic.GetValidCardsList();
-                    if (currentPlayer.PlayerType == Player.ePlayerType.Human)
-                    {
-                        makePlayerCardChoice(validCardsToChoose, currentPlayer.Name, ref currentMove);
-                    }
-                    else
-                    {
-                        makeComputersCardChoice(validCardsToChoose, ref currentMove);
-                    }
-                }
-
+                currentPlayer = r_Logic.GetCurrentPlayer();
+                currentMove = makeMove(currentPlayer);
                 if (!m_QuitGame)
                 {
                     calculateMoveResult(currentMove);
-                    validMovesLeft = m_Logic.CheckIfValidMovesLeft();
+                    validMovesLeft = r_Logic.CheckIfValidMovesLeft();
                 }
             }
 
             if (!m_QuitGame)
             {
                 printGameResult();
-                m_AnotherRound = m_ConsoleUi.AskUserForAnotherRound();
-                if (!m_AnotherRound || m_QuitGame)
-                {
-                    m_ConsoleUi.PrintGoodbyeMsg();
-                }
-                else
-                {
-                    m_Logic.SwitchTurnToMainPlayer(); 
-                }
+                askUserForAnotherRound();
             }
             else
             {
-                m_ConsoleUi.PrintGoodbyeMsg();
+                r_ConsoleUi.PrintGoodbyeMsg();
             }
+        }
+
+        private void askUserForAnotherRound()
+        {
+            m_AnotherRound = r_ConsoleUi.AskUserForAnotherRound();
+
+            if (!m_AnotherRound)
+            {
+                r_ConsoleUi.PrintGoodbyeMsg();
+            }
+            else
+            {
+                r_Logic.SwitchTurnToMainPlayer();
+            }
+        }
+
+        private Move makeMove(Player i_CurrentPlayer)
+        {
+            List<string> validCardsToChoose;    
+            const int k_NumOfCardsToChoose = 2;
+            Move currentMove = new Move(i_CurrentPlayer);
+
+            for (int i = 0; i < k_NumOfCardsToChoose && !m_QuitGame; i++)
+            {
+                validCardsToChoose = r_Logic.GetValidCardsList();
+                if (i_CurrentPlayer.PlayerType == Player.ePlayerType.Human)
+                {
+                    makePlayerCardChoice(validCardsToChoose, i_CurrentPlayer.Name, ref currentMove);
+                }
+                else
+                {
+                    makeComputersCardChoice(validCardsToChoose, ref currentMove);
+                }
+            }
+
+            return currentMove;
         }
 
         private void initializeBoards()
         {
             int height, width;
             bool validBoardSize = true;
-            const string k_invalidMsg = "Invalid Board Size (odd number of cells), please try again";
+            const string k_InvalidMsg = "Invalid Board Size (odd number of cells), please try again";
 
             do
             {
-                height = m_ConsoleUi.GetBoardHeight();
-                width = m_ConsoleUi.GetBoardWidth();
+                height = r_ConsoleUi.GetBoardHeight();
+                width = r_ConsoleUi.GetBoardWidth();
                 Console.WriteLine();
                 validBoardSize = validateBoardSize(height, width);
                 if(!validBoardSize)
                 {
-                    Console.WriteLine(k_invalidMsg);
+                    Console.WriteLine(k_InvalidMsg);
                 }
             }
             while (!validBoardSize);
@@ -118,33 +128,35 @@ namespace B20_Ex02
 
         private void initializeLogicBoard(int i_Height, int i_Width)
         {
-            m_Logic.SetBoard(i_Height, i_Width);
+            r_Logic.SetBoard(i_Height, i_Width);
         }
 
         private void initializeUiBoard(int i_Height, int i_Width)
         {
             UiBoard board = new UiBoard(i_Height, i_Width);
+
             board.ShuffleCards();
-            m_ConsoleUi.SetBoard(board);
+            r_ConsoleUi.SetBoard(board);
         }
 
         private void calculateMoveResult(Move i_Move)
         {
             bool matchingCards = checkIfMatchingCards(i_Move);
             bool validMovesLeft;
+            const string k_NoMatchMsg = "Cards are not matching!";
 
             if (!matchingCards)
             {
-                Console.WriteLine("Cards are not Matching");
-                System.Threading.Thread.Sleep(2000);
-                m_Logic.UndoMove(i_Move);
-                m_Logic.SwitchPlayers();
+                Console.WriteLine(k_NoMatchMsg);
+                System.Threading.Thread.Sleep(k_SleepTimeMiliSec);
+                r_Logic.UndoMove(i_Move);
+                r_Logic.SwitchPlayers();
                 clearAndPrintBoard();
             }
             else
             {
-                m_Logic.GivePointToCurrentPlayer();
-                validMovesLeft = m_Logic.CheckIfValidMovesLeft();
+                r_Logic.GivePointToCurrentPlayer();
+                validMovesLeft = r_Logic.CheckIfValidMovesLeft();
                 if(validMovesLeft)
                 {
                     Console.WriteLine("It's a Match! {0}, you get another turn", i_Move.GetPlayer().Name);
@@ -156,58 +168,51 @@ namespace B20_Ex02
         {
             Location firstCardLocation = i_Move.GetLocationOfFirstCard();
             Location secondCardLocation = i_Move.GetLocationOfSecondCard();
-
-            char firstCardValue = m_ConsoleUi.GetCardValue(firstCardLocation);
-            char secondCardValue = m_ConsoleUi.GetCardValue(secondCardLocation);
+            char firstCardValue = r_ConsoleUi.GetCardValue(firstCardLocation);
+            char secondCardValue = r_ConsoleUi.GetCardValue(secondCardLocation);
 
             return firstCardValue.Equals(secondCardValue);
         }
 
         private void printGameResult()
         {
-            Player winner = m_Logic.GetWinner();
-            string[] playersNames = m_Logic.GetPlayersNames();
-            int[] playersPoints = m_Logic.GetPlayersPoints();
+            Player winner = r_Logic.GetWinner();
+            string[] playersNames = r_Logic.GetPlayersNames();
+            int[] playersPoints = r_Logic.GetPlayersPoints();
 
             if (winner == null)
             {
-                m_ConsoleUi.PrintTieMsg();
+                r_ConsoleUi.PrintTieMsg();
             }
             else
             {
-                m_ConsoleUi.PrintWinnerMsg(winner.Name);
+                r_ConsoleUi.PrintWinnerMsg(winner.Name);
             }
 
-            m_ConsoleUi.PrintPoints(playersNames, playersPoints);
+            r_ConsoleUi.PrintPoints(playersNames, playersPoints);
         }
 
         private void initializePlayers()
         {
             string player1Name, player2Name;
             Player.ePlayerType player2Type;
-            bool isPlayersTurn = true;
+            const bool v_IsPlayersTurn = true;
 
-            player1Name = m_ConsoleUi.GetPlayerName("Player No. 1");
-            m_Logic.AddPlayer(player1Name, Player.ePlayerType.Human, isPlayersTurn);
+            player1Name = r_ConsoleUi.GetPlayerName("Player No. 1");
+            r_Logic.AddPlayer(player1Name, Player.ePlayerType.Human, v_IsPlayersTurn);
 
-            player2Type = m_ConsoleUi.GetOpponentType(player1Name);
+            player2Type = r_ConsoleUi.GetOpponentType(player1Name);
             if(player2Type == Player.ePlayerType.Computer)
             {
                 player2Name = "Computer";
             }
             else
             {
-                player2Name = m_ConsoleUi.GetPlayerName("Player No. 2");
+                player2Name = r_ConsoleUi.GetPlayerName("Player No. 2");
+                Console.WriteLine();
             }
 
-            m_Logic.AddPlayer(player2Name, player2Type, !isPlayersTurn);
-        }
-
-        private Move initializeMove(Player i_CurrentPlayer)
-        {
-            Move currentMove = new Move(i_CurrentPlayer);
-
-            return currentMove;
+            r_Logic.AddPlayer(player2Name, player2Type, !v_IsPlayersTurn);
         }
 
         private void clearAndPrintBoard()
@@ -223,16 +228,16 @@ namespace B20_Ex02
 
         private void printBoard()
         {
-            BoardCell[,] logicBoard = m_Logic.Board.Cells;
-            m_ConsoleUi.PrintBoard(logicBoard);
+            BoardCell[,] logicBoard = r_Logic.Board.Cells;
+            r_ConsoleUi.PrintBoard(logicBoard);
         }
 
         private void revealCardInLocation(string i_LocationStr, ref Move i_CurrentMove)
         {
             string locationDigitsStr = convertLettersToDigits(i_LocationStr);
-            Location cardLocation = m_Logic.GetLocationFromStr(locationDigitsStr);
+            Location cardLocation = r_Logic.GetLocationFromStr(locationDigitsStr);
 
-            m_Logic.RevealCard(cardLocation);
+            r_Logic.RevealCard(cardLocation);
             i_CurrentMove.SetLocation(cardLocation);
             clearAndPrintBoard();
         }
@@ -241,26 +246,24 @@ namespace B20_Ex02
         {
             char xCord = i_LocationStr[0];
             char yCord = i_LocationStr[1];
-            int xCordNum = (int)(xCord - 'A') + 1;
+            int xCordNum = (xCord - 'A') + 1;
 
             return string.Format("{0}{1}", xCordNum, yCord);
         }
 
-        private string getValidCardChoiceFromComputer(List<string> i_ValidCards)
+        private string getValidCardChoiceFromComputer(List<string> i_ValidCardsToChoose)
         {
-            List<string> validCardsToChoose = i_ValidCards;
-            validCardsToChoose.Remove("Q");
             Random numberGenerator = new Random();
-            int chosenRandomIndex = numberGenerator.Next(validCardsToChoose.Count - 1);
+            int chosenRandomIndex = numberGenerator.Next(i_ValidCardsToChoose.Count - 1);
 
-            return validCardsToChoose[chosenRandomIndex];
+            return i_ValidCardsToChoose[chosenRandomIndex];
         }
 
         private void makePlayerCardChoice(List<string> i_ValidCards, string i_PlayerName, ref Move i_CurrentMove)
         {
-            string cardChoiceStr = m_ConsoleUi.GetValidCardChoiceFromPlayer(i_ValidCards, i_PlayerName);
+            string cardChoiceStr = r_ConsoleUi.GetValidCardChoiceFromPlayer(i_ValidCards, i_PlayerName);
 
-            if(cardChoiceStr.Equals("Q"))
+            if(cardChoiceStr.Equals(k_QuitMoveString))
             {
                 m_QuitGame = true;
             }
@@ -274,7 +277,7 @@ namespace B20_Ex02
         {
             string cardChoiceStr = getValidCardChoiceFromComputer(i_ValidCards);
 
-            m_ConsoleUi.PrintComputerMoveMsg();
+            r_ConsoleUi.PrintComputerMoveMsg();
             revealCardInLocation(cardChoiceStr, ref i_CurrentMove);
         }
     }

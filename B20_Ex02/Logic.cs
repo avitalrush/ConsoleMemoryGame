@@ -7,19 +7,16 @@ namespace B20_Ex02
     public class Logic
     {
         private LogicBoard m_Board;
-        private PlayersManager m_AllPlayers;
+        private readonly PlayersManager r_AllPlayers;
 
         public Logic()
         {
-            m_AllPlayers = new PlayersManager();
+            r_AllPlayers = new PlayersManager();
         }
 
         public LogicBoard Board
         {
-            get
-            {
-                return m_Board;
-            }
+            get { return m_Board; }
         }
 
         public void SetBoard(int i_Height, int i_Width)
@@ -29,7 +26,7 @@ namespace B20_Ex02
 
         public Player GetCurrentPlayer()
         {
-            return m_AllPlayers.GetCurrentPlayer;
+            return r_AllPlayers.GetCurrentPlayer;
         }
 
         public List<string> GetValidCardsList()
@@ -44,15 +41,13 @@ namespace B20_Ex02
             {
                 for (int j = 0; j < width; j++)
                 {
-                    if(boardCells[i, j].IsHidden)
+                    if (boardCells[i, j].IsHidden)
                     {
                         cellLocationStr = CreateStrLocation(i, j);
                         validCards.Add(cellLocationStr);
                     }
                 }
             }
-
-            validCards.Add("Q");
 
             return validCards;
         }
@@ -82,22 +77,22 @@ namespace B20_Ex02
 
         public void SwitchPlayers()
         {
-            m_AllPlayers.SwitchPlayers();
+            r_AllPlayers.SwitchPlayers();
         }
 
         public void GivePointToCurrentPlayer()
         {
-            m_AllPlayers.GivePointToCurrentPlayer();
+            r_AllPlayers.GivePointToCurrentPlayer();
         }
 
         public Player GetWinner()
         {
-            return m_AllPlayers.GetWinner();
+            return r_AllPlayers.GetWinner();
         }
 
         public void AddPlayer(string i_Name, Player.ePlayerType i_PlayerType, bool i_IsPlayersTurn)
         {
-            m_AllPlayers.CreatePlayer(i_Name, i_PlayerType, i_IsPlayersTurn);
+            r_AllPlayers.CreatePlayer(i_Name, i_PlayerType, i_IsPlayersTurn);
         }
 
         public void RevealCard(Location i_CellLocation)
@@ -107,29 +102,34 @@ namespace B20_Ex02
 
         public Location GetLocationFromStr(string i_LocationStr)
         {
-            Location cellLocation = new Location(i_LocationStr[0] - '0' - 1, i_LocationStr[1] - '0' - 1);
+            Location cellLocation = new Location(getIndexFromLetter(i_LocationStr[0]), getIndexFromLetter(i_LocationStr[1]));
 
             return cellLocation;
         }
 
+        private int getIndexFromLetter(char i_Letter)
+        {
+            return i_Letter - '0' - 1;
+        }
+
         public void SwitchTurnToMainPlayer()
         {
-            m_AllPlayers.SwitchTurnToMainPlayer();
+            r_AllPlayers.SwitchTurnToMainPlayer();
         }
 
         public string[] GetPlayersNames()
         {
-            return m_AllPlayers.GetPlayersNames();
+            return r_AllPlayers.GetPlayersNames();
         }
 
         public int[] GetPlayersPoints()
         {
-            return m_AllPlayers.GetPlayersPoints();
+            return r_AllPlayers.GetPlayersPoints();
         }
 
         public void ResetPlayersScore()
         {
-            m_AllPlayers.ResetPlayersScore();
+            r_AllPlayers.ResetPlayersScore();
         }
     }
 }

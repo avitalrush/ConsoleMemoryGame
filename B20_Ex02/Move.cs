@@ -8,11 +8,11 @@ namespace B20_Ex02
     {
         private Location m_FirstCardLocation;
         private Location m_SecondCardLocation;
-        private Player m_Player;
+        private readonly Player r_Player;
 
         public Move(Player i_Player)
         {
-            this.m_Player = i_Player;
+            this.r_Player = i_Player;
         }
 
         public void SetLocation(Location i_CardLocation)
@@ -39,7 +39,7 @@ namespace B20_Ex02
 
         public Player GetPlayer()
         {
-            return m_Player;
+            return r_Player;
         }
     }
 }
